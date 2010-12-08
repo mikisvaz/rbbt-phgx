@@ -2,12 +2,37 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
  Rakefile
  bin=bin {
  }
- lib=lib/rbbt/sources {
- 
+ lib=lib{
+  phgx.rb
+  sources=rbbt/sources {
+   matador.rb
+   pharmagkb.rb
+   stitch.rb
+   string.rb
+  }
  }
  test=test {
   test_helper.rb
+  sources=rbbt/sources {
+   test_matador.rb
+   test_pharmagkb.rb
+   test_stitch.rb
+  }
  }
- data=data{
+ share=share{
+  install=install{
+   lib=lib{
+    rake_helper.rb
+   }
+   Matador=Matador{
+    Rakefile
+    }
+   PharmaGKB=PharmaGKB{
+    Rakefile
+   }
+   STITCH=STITCH{
+    Rakefile
+   }
+  }
  }
 }

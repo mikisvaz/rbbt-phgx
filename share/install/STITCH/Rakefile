@@ -1,0 +1,24 @@
+require File.join(File.dirname(__FILE__),'../lib/rake_helper')
+
+define_source_tasks "protein_chemicals" => "http://stitch.embl.de:8080/download/protein_chemical.links.v2.0.tsv.gz",
+  "chemicals" => "http://stitch.embl.de:8080/download/chemical.aliases.v2.0.tsv.gz"
+
+process_tsv :protein_chemical, 'protein_chemicals',
+  :native => 1,
+  :grep => "9606\.", 
+  :fix => lambda{|l| l.sub(/9606\./,'')},
+  :keep_empty => true do
+
+  headers ['Ensembl Protein ID', 'Chemical', 'Score']
+end
+
+process_tsv :chemicals, 'protein_chemicals',
+  :grep => $grep_re, 
+  :native => 0 do
+
+  chemicals = TSV.new('protein_chemical', :native => 1).keys
+  $grep_re = "#{chemicals * '\|'}"
+
+  headers ['Ensembl Protein ID', 'Chemical', 'Score']
+end
+
