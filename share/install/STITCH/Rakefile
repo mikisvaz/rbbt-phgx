@@ -16,6 +16,8 @@ process_tsv :chemicals, 'protein_chemicals',
   :grep => $grep_re, 
   :native => 0 do
 
+  Rake::Task['protein_chemical'].invoke
+
   chemicals = TSV.new('protein_chemical', :native => 1).keys
   $grep_re = "#{chemicals * '\|'}"
 
