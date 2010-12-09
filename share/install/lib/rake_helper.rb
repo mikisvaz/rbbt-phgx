@@ -3,17 +3,15 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rbbt/util/tsv'
 require 'rbbt/util/open'
+require 'rbbt/util/log'
 
 SOURCE_DIR = 'source'
 def define_source_tasks(sources)
   sources.each do |name, url|
     file File.join(SOURCE_DIR, name) do |t|
       FileUtils.mkdir SOURCE_DIR unless File.exists? SOURCE_DIR
-      puts File.expand_path t.name
-      puts t.name
-      puts FileUtils.pwd
-      
-      Open.write(t.name, Open.read(url, :cache => false, :wget_options => {"--no-check-certificate" => true, "--quiet" => false, :pipe => false}))
+      Log.log "Retrieving file '#{name}' into '#{t.name}': '#{url}'", Log::LOW
+      Open.write(t.name, Open.open(url, :cache => false, :wget_options => {"--no-check-certificate" => true, "--quiet" => false, :pipe => true}))
     end
   end
 end

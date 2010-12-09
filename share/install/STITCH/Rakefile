@@ -12,14 +12,18 @@ process_tsv :protein_chemical, 'protein_chemicals',
   headers ['Ensembl Protein ID', 'Chemical', 'Score']
 end
 
-process_tsv :chemicals, 'protein_chemicals',
+$grep_re = []
+process_tsv :chemicals, 'chemicals',
   :grep => $grep_re, 
   :native => 0 do
 
   Rake::Task['protein_chemical'].invoke
 
-  chemicals = TSV.new('protein_chemical', :native => 1).keys
-  $grep_re = "#{chemicals * '\|'}"
+  Log.debug "Getting chemicals"
+  chemicals = TSV.new('protein_chemical', :native => 1, :other => []).keys
+  Log.debug "Getting chemicals [done]"
+
+  $grep_re.replace chemicals
 
   headers ['Ensembl Protein ID', 'Chemical', 'Score']
 end

@@ -9,6 +9,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    pharmagkb.rb
    stitch.rb
    string.rb
+   nci.rb
   }
  }
  test=test {
@@ -31,6 +32,12 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
     Rakefile
    }
    STITCH=STITCH{
+    Rakefile
+   }
+   STRING=STRING{
+    Rakefile
+   }
+   NCI=NCI{
     Rakefile
    }
   }

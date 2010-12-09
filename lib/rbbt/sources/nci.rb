@@ -1,9 +1,9 @@
 require 'phgx'
 require 'rbbt/util/data_module'
 
-module STRING
+module NCI
   PKG = PhGx
   extend DataModule
 end
 
-if __FILE__ == $0 then STRING.all end
+if __FILE__ == $0 then NCI.all end

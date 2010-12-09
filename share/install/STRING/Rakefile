@@ -1,5 +1,4 @@
-require 'rbbt/util/open'
-require '../rake_helper'
+require File.join(File.dirname(__FILE__),'../lib/rake_helper')
 
 define_source_tasks "protein_protein" => "http://string-db.org:8080/newstring_download/protein.links.v8.3.txt.gz"
 

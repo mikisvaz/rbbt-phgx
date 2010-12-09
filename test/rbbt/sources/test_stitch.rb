@@ -4,7 +4,7 @@ require 'rbbt/util/tmpfile'
 require 'rbbt/sources/stitch'
 
 class TestSTITCH < Test::Unit::TestCase
-  def test_stitich
+  def test_stitch
     assert STITCH.chemicals.keys.any?
   end
 end
