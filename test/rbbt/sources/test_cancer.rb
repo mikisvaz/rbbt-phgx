@@ -5,7 +5,7 @@ require 'rbbt/sources/cancer'
 
 class TestCancer < Test::Unit::TestCase
   def test_anais_annotations
-    assert Cancer.anais_annotations['ENSG00000087460']['Tumor Type'].include? 'Adrenocortical'
+    assert TSV.new(Cancer.anais_annotations)['ENSG00000087460']['Tumor Type'].include? 'Adrenocortical'
   end
 end
 

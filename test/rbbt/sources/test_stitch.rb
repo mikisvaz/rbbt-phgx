@@ -5,7 +5,7 @@ require 'rbbt/sources/stitch'
 
 class TestSTITCH < Test::Unit::TestCase
   def test_stitch
-    assert STITCH.chemicals.keys.any?
+    assert TSV.new(STITCH.chemicals).keys.any?
   end
 end
 

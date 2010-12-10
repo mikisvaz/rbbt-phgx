@@ -1,5 +1,4 @@
-require 'rbbt/util/open'
-require '../rake_helper'
+require File.join(File.dirname(__FILE__),'../lib/rake_helper')
 
 define_source_tasks  "h.sapiens" => "ftp://ftp.genome.jp/pub/kegg/genes/organisms/hsa/H.sapiens.ent",
   "hsa_gene_map.tab" => "ftp://ftp.genome.jp/pub/kegg/pathway/organisms/hsa/hsa_gene_map.tab",
