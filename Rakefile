@@ -13,6 +13,8 @@ begin
     gem.files = Dir['lib/**/*.rb', 'share/**/*.rb', 'share/**/Rakefile', 'LICENSE']
     gem.test_files = Dir['test/**/test_*.rb']
 
+    gem.add_dependency('rbbt-util')
+
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new  
