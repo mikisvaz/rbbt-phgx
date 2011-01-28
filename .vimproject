@@ -28,7 +28,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
  share=share{
   install=install{
    software=software{
-    sift
    }
    lib=lib{
     rake_helper.rb

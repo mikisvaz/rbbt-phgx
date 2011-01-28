@@ -2,8 +2,8 @@ require 'phgx'
 require 'rbbt/util/data_module'
 
 module Cancer
-  PhGx.add_datafiles :anais_annotations => ['Cancer', 'Cancer/anais-annotations.txt'],
-    :anais_interactions => ['Cancer', 'Cancer/anais-interactions.txt']
+  PhGx.claim :anais_annotations, 'Cancer/anais-annotations.txt', 'Cancer'
+  PhGx.claim :anais_interactions, 'Cancer/anais-interactions.txt', 'Cancer'
 
   PKG = PhGx
   extend DataModule
