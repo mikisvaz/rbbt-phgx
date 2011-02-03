@@ -19,7 +19,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    fireDB.rb
    sift.rb
    polyphen.rb
-
   }
  }
  test=test {
