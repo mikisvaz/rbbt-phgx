@@ -6,7 +6,7 @@ define_source_tasks  "h.sapiens" => "ftp://ftp.genome.jp/pub/kegg/genes/organism
   "pathways" => "ftp://ftp.genome.jp/pub/kegg/pathway/pathway"
 
 
-file :genes => 'source/h.sapiens' do |t|
+file :identifiers => 'source/h.sapiens' do |t|
   pairs = {}
   entry = nil
   Open.read(t.prerequisites.first).each do |line|
