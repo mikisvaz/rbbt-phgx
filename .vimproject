@@ -14,6 +14,13 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    stitch.rb
    string.rb
   }
+  mutation=rbbt/mutation{
+   snps_and_go.rb
+   fireDB.rb
+   sift.rb
+   polyphen.rb
+
+  }
  }
  test=test {
   test_helper.rb
@@ -37,7 +44,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
     }
    KEGG=KEGG{
     Rakefile
-    }
+   }
    PharmaGKB=PharmaGKB{
     Rakefile
    }
