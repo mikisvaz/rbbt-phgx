@@ -5,7 +5,7 @@ module SIFT
   URL_GENOMIC="http://sift.jcvi.org/sift-bin/SIFT_feed_to_chr_coords.pl"
 
   def self.predict_aminoacid_mutation(accession, mutations)
-    doc = Nokogiri::HTML(Open.read(URL_AMINOACID, :wget_options => {"--post-data" => "'GI=#{[accession, mutations].flatten * ","}'"}, :nocache => false))
+    doc = Nokogiri::HTML(Open.read(URL_AMINOACID, :wget_options => {"--post-data" => "'GI=#{[accession, mutations].flatten * ","}&sequences_to_select=BEST&seq_identity_filter=90'"}, :nocache => false))
 
     rows = []
     doc.css('tr').each do |row|

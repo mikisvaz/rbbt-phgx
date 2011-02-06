@@ -14,7 +14,7 @@ process_tsv :diseases, 'diseases',
   headers ['PhGKB Disease ID']
 end
 
-process_tsv :genes, 'genes', 
+process_tsv :identifiers, 'genes', 
   :header_hash => "",
   :fix => proc{|l| l.gsub(/","/,'|').gsub(/"/,'').gsub(/,(\t|$)/,'\1')} do
   headers ['PhGKB Gene ID', 'Entrez Gene ID', 'Ensembl Gene Id', 'UniProt/SwissProt Accession', 'Long Name', 'Associated Gene Name']
