@@ -62,7 +62,7 @@ file :gene_drug => 'source/gene_drug' do |t|
   end
 
   File.open(t.name, 'w') do |f|
-    f.puts "#" + ['Associated Gene Name', 'Drugs', 'Drug Concepts', 'Statements', 'PMIDS'] * "\t"
+    f.puts "#" + ['Associated Gene Name', 'Drugs', 'Drug Concepts', 'Drug Statements', 'Drug PMIDS'] * "\t"
     info.each do |entry, line|
       f.puts line
     end
@@ -126,7 +126,7 @@ file :gene_cancer => 'source/cancer_gene' do |t|
   end
 
   File.open(t.name, 'w') do |f|
-    f.puts "#" + ['Associated Gene Name', 'Diseases', 'Disease Concepts', 'Statements', 'PMIDS'] * "\t"
+    f.puts "#" + ['Associated Gene Name', 'Diseases', 'Disease Concepts', 'Cancer Statements', 'Cancer PMIDS'] * "\t"
     info.each do |entry, line|
       f.puts line
     end

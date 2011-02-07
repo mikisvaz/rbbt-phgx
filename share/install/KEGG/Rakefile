@@ -93,12 +93,12 @@ file :pathways => 'source/pathways' do |t|
     end
   end
   
-  Open.write(t.name, ['#KEGG Pathway ID', 'Name', 'Description'] * "\t" + "\n" + names.keys.collect{|pathway| [pathway, names[pathway], descs[pathway]] * "\t"} * "\n")
+  Open.write(t.name, ['#KEGG Pathway ID', 'Pathway Name', 'Pathway Description'] * "\t" + "\n" + names.keys.collect{|pathway| [pathway, names[pathway], descs[pathway]] * "\t"} * "\n")
 end
 
 process_tsv :gene_pathway, 'hsa_gene_map.tab',
   :sep2 => ' ' do 
-  headers ['KEGG Gene ID', 'KEGG Pathways']
+  headers ['KEGG Gene ID', 'KEGG Pathway ID']
   data do |gene, pathway|
     "hsa:#{ gene }\t#{pathway.flatten.collect{|name| "hsa" + name} * "|"}"
   end
