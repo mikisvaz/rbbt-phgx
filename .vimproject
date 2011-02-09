@@ -8,6 +8,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    cancer.rb
    matador.rb
    kegg.rb
+   reactome.rb
    nci.rb
    pharmagkb.rb
    sift.rb
@@ -40,7 +41,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    }
    Matador=Matador{
     Rakefile
-    }
+   }
    KEGG=KEGG{
     Rakefile
    }
@@ -54,6 +55,9 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
     Rakefile
    }
    NCI=NCI{
+    Rakefile
+   }
+   Reactome=Reactome{
     Rakefile
    }
   }

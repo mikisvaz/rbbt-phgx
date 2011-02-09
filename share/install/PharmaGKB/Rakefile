@@ -22,7 +22,7 @@ end
 
 process_tsv :drugs, 'drugs', 
   :header_hash => "",
-  :extra => ['Name', 'DrugBank Id'],
+  :fields => ['Name', 'DrugBank Id'],
   :fix => proc{|l| l.gsub(/","/,'|').gsub(/"/,'').gsub(/,(\t|$)/,'\1')} do
   headers ['PhGKB Drug ID', 'Drug Name', 'DrugBank ID', ]
 end
@@ -30,19 +30,21 @@ end
 
 process_tsv :gene_drug, 'relationships',
   :select => proc{|l| l =~ /Gene:/ && l =~ /Drug:/}, 
-  :native => 'Entity1_id', 
-  :extra => ['Entity2_id','Relationship'], 
+  :key => 'Entity1_id', 
+  :fields => ['Entity2_id','Relationship'], 
   :header_hash => "",
-  :fix => proc{|l| l.gsub(/Gene:|Drug:|Disease/,'')},
+  :merge => true,
+  :fix => proc{|l| l.gsub(/Gene:|Drug:|Disease:/,'')},
   :keep_empty => true do
 
-  headers ['PhGKB Gene ID', 'Drug Name']
+  headers ['PhGKB Gene ID', 'Drug Name', "Relationship"]
 end
 
 process_tsv :gene_disease, 'relationships', 
   :select => proc{|l| l =~ /Gene:/ && l =~ /Disease:/}, 
-  :native => 1, 
-  :extra => 3, 
+  :key => 1, 
+  :fields => 3, 
+  :merge => true,
   :header_hash => "",
   :fix => proc{|l| l.gsub(/Gene:|Drug:|Disease/,'')},
   :keep_empty => true do
@@ -51,9 +53,10 @@ process_tsv :gene_disease, 'relationships',
 end
 
 process_tsv :variants, 'variants', 
-  :native => 1, 
-  :extra => [3,7,8,9,10,4,5], 
+  :key => 1, 
+  :fields => [3,7,8,9,10,4,5], 
   :header_hash => "",
+  :merge => true,
   :fix => proc{|l| l.gsub(/Gene:|Drug:|Disease/,'')},
   :keep_empty => true do
 

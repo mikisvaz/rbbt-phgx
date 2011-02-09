@@ -4,7 +4,7 @@ define_source_tasks "protein_chemicals" => "http://stitch.embl.de:8080/download/
   "chemicals" => "http://stitch.embl.de:8080/download/chemical.aliases.v2.0.tsv.gz"
 
 process_tsv :protein_chemical, 'protein_chemicals',
-  :native => 1,
+  :key => 1,
   :grep => "9606\.", 
   :fix => lambda{|l| l.sub(/9606\./,'')},
   :keep_empty => true do
@@ -15,12 +15,12 @@ end
 $grep_re = []
 process_tsv :chemicals, 'chemicals',
   :grep => $grep_re, 
-  :native => 0 do
+  :key  => 0 do
 
   Rake::Task['protein_chemical'].invoke
 
   Log.debug "Getting chemicals"
-  chemicals = TSV.new('protein_chemical', :native => 1, :other => []).keys
+  chemicals = TSV.new('protein_chemical', :key => 1, :fields => []).keys
   Log.debug "Getting chemicals [done]"
 
   $grep_re.replace chemicals
