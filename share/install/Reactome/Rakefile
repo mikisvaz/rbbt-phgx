@@ -1,0 +1,27 @@
+require File.join(File.dirname(__FILE__),'../lib/rake_helper')
+
+define_source_tasks  "human_ppi" => "http://www.reactome.org/download/current/homo_sapiens.interactions.txt.gz",
+  "protein_pathway" => "http://www.reactome.org/download/current/uniprot_2_pathways.stid.txt"
+
+process_tsv :protein_protein, 'human_ppi',
+  :key         => 0, 
+  :fix         => lambda{|l| l.gsub(/\t[a-z ]+:/i,"\t").gsub(/^[a-z ]+:/i,'')}, 
+  :fields      => [3,6,7,8], 
+  :header_hash => "#",
+  :merge       => true,
+  :keep_empty  => true do 
+
+  headers ['UniProt/SwissProt Accession', 'Interactor UniProt/SwissProt Accession', 'Interaction Type', 'Reactions Involved', 'Interaction PMIDS']
+end
+
+
+process_tsv :protein_pathway, 'protein_pathway',
+  :key         => 0, 
+  :fix         => lambda{|l| l.gsub(/\t[a-z ]+:/i,"\t").gsub(/^[a-z ]+:/i,'')}, 
+  :fields      => [3,6,7], 
+  :header_hash => "#",
+  :merge       => true,
+  :keep_empty  => true do 
+
+  headers ['UniProt/SwissProt Accession', 'Pathway ID', 'Pathway Description']
+end
