@@ -3,11 +3,12 @@ require 'rbbt/mutation/fireDB'
 
 class TestFireDB < Test::Unit::TestCase
   def test_true
-    accession = "A6NFZ4"
-    sequence = "MAKMFDLRTKIMIGIGSSLLVAAMVLLSVVFCLYFKVAKALKAAKDPDAVAVKNHNPDKVCWATNSQAKATTMESCPSLQCCEGCRMHASSDSLPPCCCDINEGL"
-    mutation = "Y34D"
+    assert true
+    #accession = "A6NFZ4"
+    #sequence = "MAKMFDLRTKIMIGIGSSLLVAAMVLLSVVFCLYFKVAKALKAAKDPDAVAVKNHNPDKVCWATNSQAKATTMESCPSLQCCEGCRMHASSDSLPPCCCDINEGL"
+    #mutation = "Y34D"
 
-    puts FireDB.predict(accession, sequence, mutation)
+    #puts FireDB.predict(accession, sequence, mutation)
   end
 end
 

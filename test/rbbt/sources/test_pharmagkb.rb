@@ -5,7 +5,7 @@ require 'rbbt/sources/pharmagkb'
 
 class TestPhGKB < Test::Unit::TestCase
   def test_phgkb
-    assert TSV.new(PharmaGKB.variants)['rs25487']['Associated Gene Name'].include? 'XRCC1'
+    assert PharmaGKB.variants.tsv['rs25487']['Associated Gene Name'].include? 'XRCC1'
   end
 end
 
