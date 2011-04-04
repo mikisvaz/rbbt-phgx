@@ -1,0 +1,55 @@
+require 'rbbt-util'
+require 'nokogiri'
+
+URL="http://www.snpedia.com/index.php/"
+
+file :snps do |t|
+  all_snps = Open.read("http://www.snpedia.com/files/gbrowse/snpedia.gff").scan(/rs\d+/).uniq
+
+  data = TSV.new({}, :double)
+  data.key_field = "SNP ID"
+  data.fields = %w(Genotype Effect Magnitude)
+  all_snps.each{|snp|
+    puts snp
+
+    begin
+      doc = Nokogiri::HTML(Open.read(File.join(URL, snp)))
+    rescue
+      puts "SNP #{ snp } not found"
+      next
+    end
+
+    table = doc.css('table#querytable4').first
+
+    if table.nil?
+      puts "No table for #{ snp }"
+      next
+    end
+
+    info = []
+    table.css("tr")[1..-1].each do |row|
+      genotype, magnitude, effect = row.css("td")
+
+      genotype = genotype.content.match(/\((.*)\)/)[1]
+
+      if  magnitude.css("span").empty?
+        magnitude = ""
+      else
+        magnitude = magnitude.css("span").first.content
+      end
+
+      effect = effect.content
+     
+      puts magnitude.inspect
+     
+      puts [genotype, magnitude, effect].inspect
+      info << [genotype, magnitude, effect]
+    end
+
+    info = NamedArray.name(info,  %w(Genotype Effect Magnitude))
+    data[snp] = info.zip_fields
+  }
+
+  Open.write(t.name, data.to_s)
+end
+

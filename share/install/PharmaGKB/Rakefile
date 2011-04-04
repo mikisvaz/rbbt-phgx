@@ -54,13 +54,13 @@ end
 
 process_tsv :variants, 'variants', 
   :key => 1, 
-  :fields => [3,7,8,9,10,4,5], 
+  :fields => [3,7,8,9,10,4,6,5], 
   :header_hash => "",
   :merge => true,
   :fix => proc{|l| l.gsub(/Gene:|Drug:|Disease/,'')},
   :keep_empty => true do
 
-  headers ['Variant ID', 'Associated Gene Name', 'Drug', 'Drug_Class', 'Disease', 'Curation', 'Feature', 'Evidence']
+  headers ['Variant ID', 'Associated Gene Name', 'Drug', 'Drug_Class', 'Disease', 'Curation', 'Feature', 'Annotation', 'Evidence']
 end
 
 file :pathways => 'source/pathways' do |t|
