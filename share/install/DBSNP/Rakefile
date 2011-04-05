@@ -10,8 +10,6 @@ file :snps do |t|
   data.key_field = "SNP ID"
   data.fields = %w(Genotype Effect Magnitude)
   all_snps.each{|snp|
-    puts snp
-
     begin
       doc = Nokogiri::HTML(Open.read(File.join(URL, snp)))
     rescue
@@ -40,9 +38,6 @@ file :snps do |t|
 
       effect = effect.content
      
-      puts magnitude.inspect
-     
-      puts [genotype, magnitude, effect].inspect
       info << [genotype, magnitude, effect]
     end
 
