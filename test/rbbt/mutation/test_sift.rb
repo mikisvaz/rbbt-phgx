@@ -10,15 +10,11 @@ class TestSIFT < Test::Unit::TestCase
     assert_equal "TOLERATED", SIFT.predict_aminoacid_mutation(accession, mutation)[3]
   end
 
-  def test_parse_mutation
-    mutation = "2:43881517:1:A/T"
+  def test_predict_aminoacid_mutation_batch
+    accession = "NP_001008502"
+    mutation =  "Q554P"
 
-    assert_equal %w(2 43881517 1 A T), SIFT.parse_genomic_mutation(mutation)
-  end
-
-  def test_predict_aminoacid_mutation
-    mutation = "2:43881517:1:A/T"
-    puts SIFT.predict_genomic_mutation(mutation)
+    assert_equal "TOLERATED", SIFT.predict_aminoacid_mutation_batch( [[accession, mutation]]).first[3]
   end
 
 

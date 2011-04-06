@@ -29,7 +29,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    test_cancer.rb
    test_matador.rb
    test_pharmagkb.rb
-   test_sift.rb
    test_stitch.rb
   }
  }

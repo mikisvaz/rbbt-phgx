@@ -21,34 +21,33 @@ module SIFT
     end
   end
 
+  def self.predict_aminoacid_mutation_batch(mutations)
+    data = case
+             when String === mutations
+               mutations
+             when Array === mutations
+               mutations.collect{|p| p * ", "} * "\n" if Array === mutations
+             when TSV === mutations
+               mutations.slice("Refseq Protein ID", "Protein Mutation").colllct{|id, mutations| [id, mutations].flatten  * ","} * "\n"
+             end
+
+    doc = Nokogiri::HTML(Open.read(URL_AMINOACID, :wget_options => {"--post-data" => "'GI=#{data}&sequences_to_select=BEST&seq_identity_filter=90'"}, :nocache => false))
+
+    rows = []
+    doc.css('tr').each do |row|
+      rows << row.css('td').collect{|cell| cell.content}
+    end
+
+    rows.shift
+
+    if Array === mutations
+      rows
+    else
+      rows.first
+    end
+  end
+
   def self.parse_genomic_mutation(mutation)
     mutation.match(/(\d+):(\d+):(1|-1):([A-Z])\/([A-Z])/).values_at 1,2,3,4,5
   end
-
-  def self.predict_genomic_mutation(mutations)
-    mutations = [mutations] unless Array === mutations
-    codes = mutations.collect{|mutation|
-      parts = parse_genomic_mutation(mutation)
-      parts[0..2] * ',' + ",#{parts[3]}/#{parts[4]}"
-    }
-
-    return Open.read(URL_GENOMIC, :wget_options => {"--post-data" => "'CHR=#{codes * "\n"}'", :nocache => false})
-
-#    doc = Nokogiri::HTML(Open.read(URL_GENOMIC, :wget_options => {"--post-data" => "'CHR=#{codes * "\n"}"))
-#
-#
-#    rows = []
-#    doc.css('tr').each do |row|
-#      rows << row.css('td').collect{|cell| cell.content}
-#    end
-#
-#    rows.shift
-#
-#    if Array === mutations
-#      rows
-#    else
-#      rows.first
-#    end
-  end
-
 end

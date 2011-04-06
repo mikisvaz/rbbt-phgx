@@ -1,10 +1,85 @@
 require 'rbbt/util/open'
+require 'rbbt/util/tsv'
 require 'nokogiri'
 require 'digest/md5'
 
 module Polyphen2
+
   URL="http://genetics.bwh.harvard.edu/cgi-bin/ggi/ggi2.cgi"
   URL_BASE="http://genetics.bwh.harvard.edu/"
+
+  module Batch
+    OPTIONS = {
+      "_ggi_project"                      => "PPHWeb2",
+      "_ggi_origin"                       => "query",
+      "_ggi_batch_file"                   => "",
+      "description"                       => "",
+      "NOTIFYME"                          => "",
+      "uploaded_sequences_1"              => "",
+      "description_of_uploaded_sequences" => "",
+      "MODELNAME"                         => "HumDiv",
+      "UCSCDB"                            => "hg19",
+      "SNPFILTER"                         => "1",
+      "SNPFUNC"                           => "m",
+      "_ggi_target_pipeline"              => "Submit Batch",
+    }
+
+    REFRESH_OPTIONS = {
+      "sid"                => "",
+      "_ggi_project"       => "PPHWeb2",
+      "_ggi_origin"        => "manage",
+      "_ggi_target_manage" => "Refresh",
+    }
+
+  def self.predict(query)
+    options = OPTIONS.merge "_ggi_batch" => query
+
+    desc =  Digest::MD5.hexdigest(options.inspect)
+    options["description"] = desc
+
+    ddd desc
+
+    doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
+
+    sid = doc.css('input[name=sid]').attr('value')
+
+    options = REFRESH_OPTIONS.merge "sid" => sid
+    finished = false
+
+    view_link = nil
+    while not finished do
+      doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
+
+      result_table =  doc.css('body > table')[1].css('table')[2]
+
+      rows = result_table.css('tr')
+
+      row = rows.select{|row| row.css('td').length == 6}.select{|row| row.css('td').last.content.strip == desc}.first
+
+      cells = row.css('td')
+      if cells[2].content =~ /Error/
+        view_link = nil
+        break
+      end
+
+      if cells[1].content =~ /Short/
+        view_link =  cells[1].css('a').attr('href')
+        break
+      end
+
+      sleep 1
+    end
+
+    return nil if view_link.nil?
+
+    tsv = TSV.new Open.open(Polyphen2::URL_BASE + view_link, :nocache => true), :double, :key => 'acc', :merge => true
+
+    return tsv
+  end
+
+
+  end
+
 
   OPTIONS = {
     "ContAllHits"        => 0,
@@ -61,7 +136,7 @@ module Polyphen2
       result_table =  doc.css('body > table')[1].css('table')[2]
 
       rows = result_table.css('tr')
-      
+
       row = rows.select{|row| row.css('td').length == 6}.select{|row| row.css('td').last.content.strip == desc}.first
 
       cells = row.css('td')
