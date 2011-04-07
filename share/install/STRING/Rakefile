@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__),'../lib/rake_helper')
 
 define_source_tasks "protein_protein" => "http://string-db.org:8080/newstring_download/protein.links.v8.3.txt.gz"
 
-process_tsv :protein_protein, 'protein_protein', :grep => '9606\.ENSP', :fix => lambda{|l| l.gsub(/9606\./,'')}, :merge => true do 
+process_tsv :protein_protein, 'protein_protein', :grep => '9606\.ENSP', :fix => lambda{|l| l.gsub(/9606\./,'')}, :merge => true, :sep => "\s" do 
   headers ['Ensembl Protein ID', 'Interactor Ensembl Protein ID', 'Score']
 end
 
