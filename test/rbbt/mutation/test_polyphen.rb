@@ -12,7 +12,7 @@ class TestPolyphen2 < Test::Unit::TestCase
   def test_batch
     query =<<-EOF
 A6NFZ4 Y34D
-   EOF
+    EOF
 
     puts Polyphen2::Batch.predict(query)
   end

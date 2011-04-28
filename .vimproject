@@ -17,6 +17,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    dbsnp.rb
   }
   mutation=rbbt/mutation{
+   misc.rb
    snps_and_go.rb
    fireDB.rb
    sift.rb

@@ -14,6 +14,7 @@ class TestSIFT < Test::Unit::TestCase
     accession = "NP_001008502"
     mutation =  "Q554P"
 
+    ddd SIFT.predict_aminoacid_mutation_batch( [[accession, mutation]])
     assert_equal "TOLERATED", SIFT.predict_aminoacid_mutation_batch( [[accession, mutation]]).first[3]
   end
 
