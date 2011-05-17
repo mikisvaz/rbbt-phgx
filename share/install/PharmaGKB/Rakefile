@@ -22,9 +22,9 @@ end
 
 process_tsv :drugs, 'drugs', 
   :header_hash => "",
-  :fields => ['Name', 'DrugBank Id'],
+  :fields => ['Name', 'Cross References'],
   :fix => proc{|l| l.gsub(/","/,'|').gsub(/"/,'').gsub(/,(\t|$)/,'\1')} do
-  headers ['PhGKB Drug ID', 'Drug Name', 'DrugBank ID', ]
+  headers ['PhGKB Drug ID', 'Drug Name', 'Cross References', ]
 end
 
 
