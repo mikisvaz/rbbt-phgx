@@ -1,0 +1,20 @@
+require File.join(File.dirname(__FILE__),'../lib/rake_helper')
+require 'rbbt/sources/organism'
+
+BIOGRID_URL = "http://thebiogrid.org/downloads/archives/Release%20Archive/BIOGRID-3.1.77/BIOGRID-ORGANISM-3.1.77.tab2.zip"
+
+file 'source' do |t|
+  FileUtils.mkdir_p t.name
+  Misc.in_dir(t.name) do
+    CMD::cmd("wget '#{BIOGRID_URL}' -O biogrid.zip")
+    CMD::cmd('unzip biogrid.zip')
+  end
+end
+
+rule /(\w+)\/protein_protein/ => 'source' do |t|
+  org = t.name.match(/(\w+)\/protein_protein/)[1]
+  FileUtils.mkdir_p File.dirname(t.name)
+  name = Organism.name(org)
+  source_file = Dir.glob(File.join(t.prerequisites.first, '*')).select{|file| file =~  /#{name.sub(' ', '_')}/}.first
+  FileUtils.cp source_file, t.name
+end
