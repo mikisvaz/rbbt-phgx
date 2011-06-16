@@ -16,6 +16,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    string.rb
    hprd.rb
    dbsnp.rb
+   pina.rb
   }
   mutation=rbbt/mutation{
    misc.rb
@@ -69,6 +70,9 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
     Rakefile
    }
    HPRD=HPRD{
+    Rakefile
+   }
+   Pina=Pina{
     Rakefile
    }
   }
