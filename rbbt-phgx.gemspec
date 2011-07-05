@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rbbt-phgx}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Miguel Vazquez"]
-  s.date = %q{2010-12-10}
+  s.date = %q{2011-07-05}
   s.description = %q{Pharmaco-genomics related data sources}
   s.email = %q{miguel.vazquez@fdi.ucm.es}
   s.extra_rdoc_files = [
@@ -18,17 +18,35 @@ Gem::Specification.new do |s|
   s.files = [
     "LICENSE",
     "lib/phgx.rb",
+    "lib/rbbt/mutation/fireDB.rb",
+    "lib/rbbt/mutation/polyphen.rb",
+    "lib/rbbt/mutation/sift.rb",
+    "lib/rbbt/mutation/snps_and_go.rb",
+    "lib/rbbt/sources/biogrid.rb",
     "lib/rbbt/sources/cancer.rb",
+    "lib/rbbt/sources/dbsnp.rb",
+    "lib/rbbt/sources/hprd.rb",
     "lib/rbbt/sources/kegg.rb",
     "lib/rbbt/sources/matador.rb",
     "lib/rbbt/sources/nci.rb",
     "lib/rbbt/sources/pharmagkb.rb",
+    "lib/rbbt/sources/pina.rb",
+    "lib/rbbt/sources/reactome.rb",
+    "lib/rbbt/sources/sift.rb",
     "lib/rbbt/sources/stitch.rb",
     "lib/rbbt/sources/string.rb",
+    "share/Cancer/anais_annotations",
+    "share/Cancer/anais_interactions",
+    "share/Cancer/cancer_genes.tsv",
+    "share/install/Biogrid/Rakefile",
+    "share/install/DBSNP/Rakefile",
+    "share/install/HPRD/Rakefile",
     "share/install/KEGG/Rakefile",
     "share/install/Matador/Rakefile",
     "share/install/NCI/Rakefile",
     "share/install/PharmaGKB/Rakefile",
+    "share/install/Pina/Rakefile",
+    "share/install/Reactome/Rakefile",
     "share/install/STITCH/Rakefile",
     "share/install/STRING/Rakefile",
     "share/install/lib/rake_helper.rb"
@@ -37,22 +55,19 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Pharmaco-genomics for the Ruby Bioinformatics Toolkit (rbbt)}
-  s.test_files = [
-    "test/rbbt/sources/test_cancer.rb",
-    "test/rbbt/sources/test_matador.rb",
-    "test/rbbt/sources/test_pharmagkb.rb",
-    "test/rbbt/sources/test_stitch.rb",
-    "test/test_helper.rb"
-  ]
+  s.test_files = ["test/rbbt/sources/test_matador.rb", "test/rbbt/sources/test_pharmagkb.rb", "test/rbbt/sources/test_stitch.rb", "test/rbbt/sources/test_cancer.rb", "test/rbbt/mutation/test_snps_and_go.rb", "test/rbbt/mutation/test_fireDB.rb", "test/rbbt/mutation/test_sift.rb", "test/rbbt/mutation/test_polyphen.rb", "test/test_helper.rb"]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<rbbt-util>, [">= 0"])
     else
+      s.add_dependency(%q<rbbt-util>, [">= 0"])
     end
   else
+    s.add_dependency(%q<rbbt-util>, [">= 0"])
   end
 end
 
