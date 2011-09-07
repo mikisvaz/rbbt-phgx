@@ -6,7 +6,7 @@ class TestPolyphen2 < Test::Unit::TestCase
     accession = "A6NFZ4"
     mutation =  "Y34D"
 
-    puts Polyphen2.predict(accession, mutation)
+    assert_equal "probably damaging", Polyphen2.predict(accession, mutation).first
   end
 
   def test_batch
@@ -14,7 +14,7 @@ class TestPolyphen2 < Test::Unit::TestCase
 A6NFZ4 Y34D
     EOF
 
-    puts Polyphen2::Batch.predict(query)
+    assert_equal "probably damaging", Polyphen2::Batch.predict(query)["A6NFZ4_Y34D"]["prediction"].first
   end
 end
 

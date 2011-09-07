@@ -30,7 +30,7 @@ end
 
 process_tsv :gene_drug, 'relationships',
   :select => proc{|l| l =~ /Gene:/ && l =~ /Drug:/}, 
-  :key => 'Entity1_id', 
+  :key_field => 'Entity1_id', 
   :fields => ['Entity2_id','Relationship'], 
   :header_hash => "",
   :merge => true,
@@ -42,7 +42,7 @@ end
 
 process_tsv :gene_disease, 'relationships', 
   :select => proc{|l| l =~ /Gene:/ && l =~ /Disease:/}, 
-  :key => 1, 
+  :key_field => 1, 
   :fields => 3, 
   :merge => true,
   :header_hash => "",
@@ -53,7 +53,7 @@ process_tsv :gene_disease, 'relationships',
 end
 
 process_tsv :variants, 'variants', 
-  :key => 1, 
+  :key_field => 1, 
   :fields => [3,7,8,9,10,4,6,5], 
   :header_hash => "",
   :merge => true,
@@ -90,7 +90,7 @@ file :gene_pathway => 'source/pathways' do |t|
   end
 
   File.open(t.name, 'w') do |f|
-    f.puts "#" + ['Pathway ID',  'Pathway Name',  'Associated Gene Name'] * "\t"
+    f.puts "#" + ['PhGKB Pathway ID',  'Pathway Name',  'Associated Gene Name'] * "\t"
     pathways.each do |pathway, info|
       next if info[:genes].nil?
       f.puts "#{ pathway }\t#{info[:name]}\t#{info[:genes] * "|"}"

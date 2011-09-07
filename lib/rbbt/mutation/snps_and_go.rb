@@ -29,21 +29,49 @@ module SNPSandGO
     raise "Field 'Protein Mutation' Not in TSV" if protein_field.nil?
 
 
-    tsv.add_field "SNPs&GO:Prediction" do |key,values|
-      uniprots = if uniprot_field === :key
-                   [key]
-                 else
-                   values[uniprot_field] || []
-                 end
+    if tsv.type == :double
+      tsv.add_field "SNPs&GO:Prediction" do |key,values|
+        uniprots = if uniprot_field === :key
+                     [key]
+                   else
+                     values[uniprot_field] || []
+                   end
 
-      mutations = values[protein_field]
+        mutations = values[protein_field]
 
-      uniprots.zip(mutations).collect{|uniprot,mutation| 
+        uniprots.zip(mutations).collect{|uniprot,mutation| 
+          case
+          when mutation.nil?
+            "No Prediction" 
+          when mutation[0] == mutation[-1]
+            "Neutral"
+          when (uniprot.nil? or uniprot.empty?)
+            "No Prediction" 
+          else
+            begin
+              SNPSandGO.predict(uniprot, mutation).first
+            rescue
+              "No Prediction"
+            end
+          end
+        }
+      end
+    else
+      tsv.add_field "SNPs&GO:Prediction" do |key,values|
+        uniprot = if uniprot_field === :key
+                     key
+                   else
+                     values[uniprot_field]
+                   end
+
+        next if uniprot.nil? or uniprot.empty?
+        
+        mutation = values[protein_field]
         case
         when mutation.nil?
           "No Prediction" 
         when mutation[0] == mutation[-1]
-            "Neutral"
+          "Neutral"
         when (uniprot.nil? or uniprot.empty?)
           "No Prediction" 
         else
@@ -53,7 +81,7 @@ module SNPSandGO
             "No Prediction"
           end
         end
-      }
+      end
     end
 
     tsv

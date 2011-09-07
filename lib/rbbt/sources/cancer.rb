@@ -2,6 +2,6 @@ require 'phgx'
 
 module Cancer
   extend Resource
-  relative_to Rbbt, "share/Cancer"
-  @namespace = "Cancer"
+  self.pkgdir = "phgx"
+  self.subdir = self["share/Cancer"].find :lib
 end

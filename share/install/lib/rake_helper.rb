@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '../../../lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'rbbt/util/tsv'
+require 'rbbt/tsv'
 require 'rbbt/util/open'
 require 'rbbt/util/log'
 
@@ -43,7 +43,7 @@ def process_tsv(file, source, options = {}, &block)
   file file => File.join(SOURCE_DIR, source) do |t|
     block.call
 
-    d = TSV.new(t.prerequisites.first, options)
+    d = TSV.open(t.prerequisites.first, options)
 
     if d.fields != nil
       data_fields = d.fields.dup.unshift d.key_field

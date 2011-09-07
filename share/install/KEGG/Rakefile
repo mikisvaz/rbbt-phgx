@@ -78,6 +78,7 @@ end
 file :pathways => 'source/pathways' do |t|
   descs = {}
   names = {}
+  klass = {}
   pathway = nil
   Open.read(t.prerequisites.first).split(/\n/).each do |line|
     if line =~ /ENTRY\s+(\w+)/
@@ -91,9 +92,13 @@ file :pathways => 'source/pathways' do |t|
     if line =~ /DESCRIPTION (.*)/
       descs[pathway] = $1.strip
     end
+
+    if line =~ /CLASS (.*)/
+      klass[pathway] = $1.strip
+    end
   end
   
-  Open.write(t.name, ['#KEGG Pathway ID', 'Pathway Name', 'Pathway Description'] * "\t" + "\n" + names.keys.collect{|pathway| [pathway, names[pathway], descs[pathway]] * "\t"} * "\n")
+  Open.write(t.name, "#: :type=:list\n" + ['#KEGG Pathway ID', 'Pathway Name', 'Pathway Description', 'Pathway Class'] * "\t" + "\n" + names.keys.collect{|pathway| [pathway, names[pathway], descs[pathway], klass[pathway]] * "\t"} * "\n")
 end
 
 process_tsv :gene_pathway, 'hsa_gene_map.tab',

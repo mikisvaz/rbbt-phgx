@@ -1,5 +1,5 @@
-require 'rbbt-util'
-require 'rbbt/util/resource'
+require 'rbbt'
+require 'rbbt/resource'
 
 module PhGx
   extend Resource

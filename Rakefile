@@ -13,7 +13,7 @@ begin
     gem.files = Dir['lib/**/*.rb', 'share/**/*.rb', 'share/**/Rakefile', 'share/Cancer/*', 'LICENSE']
     gem.test_files = Dir['test/**/test_*.rb']
 
-    gem.add_dependency('rbbt-util')
+    gem.add_dependency('rbbt-util', ">= 4.0.0")
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

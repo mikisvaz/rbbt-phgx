@@ -1,5 +1,5 @@
 require 'rbbt/util/open'
-require 'rbbt/util/tsv'
+require 'rbbt/tsv'
 require 'nokogiri'
 require 'digest/md5'
 
@@ -37,8 +37,6 @@ module Polyphen2
     desc =  Digest::MD5.hexdigest(options.inspect)
     options["description"] = desc
 
-    ddd desc
-
     doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
 
     sid = doc.css('input[name=sid]').attr('value')
@@ -67,12 +65,14 @@ module Polyphen2
         break
       end
 
-      sleep 1
+      sleep 3
     end
 
     return nil if view_link.nil?
 
-    tsv = TSV.new Open.open(Polyphen2::URL_BASE + view_link, :nocache => true), :double, :key => 'acc', :merge => true
+    tsv = TSV.open Open.open(Polyphen2::URL_BASE + view_link, :nocache => true), :double, :merge => true, :fix => Proc.new{|l| l.gsub(/ *\t */, "\t")}
+    tsv.fields = tsv.fields.collect{|f| f.strip}
+    tsv.key_field = tsv.key_field.strip
 
     return tsv
   end
@@ -150,7 +150,7 @@ module Polyphen2
         break
       end
 
-      sleep 1
+      sleep 3
     end
 
     return nil if view_link.nil?
