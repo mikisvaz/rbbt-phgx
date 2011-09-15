@@ -2,5 +2,8 @@ require 'phgx'
 
 module Pina
   extend Resource
-  data_module PhGx
+  self.pkgdir = "phgx"
+  self.subdir = "share/pina"
+
+  Pina.claim Pina.root.find, :rake, Rbbt.share.install.Pina.Rakefile.find(:lib)
 end
