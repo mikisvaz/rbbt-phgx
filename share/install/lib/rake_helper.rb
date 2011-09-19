@@ -49,8 +49,6 @@ def process_tsv(file, source, options = {}, &block)
       data_fields = d.fields.dup.unshift d.key_field
       if $__headers.nil?
         $__headers = data_fields
-      else
-       $__headers = data_fields.zip($__headers).collect{|l| l.compact.last}
       end
     end
 

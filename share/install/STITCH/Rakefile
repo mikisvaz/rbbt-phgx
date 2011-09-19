@@ -20,7 +20,7 @@ process_tsv :chemicals, 'chemicals',
   Rake::Task['protein_chemical'].invoke
 
   Log.debug "Getting chemicals"
-  chemicals = TSV.new('protein_chemical', :key => 1, :fields => []).keys
+  chemicals = TSV.open('protein_chemical', :key_field => 1, :fields => []).keys
   Log.debug "Getting chemicals [done]"
 
   $grep_re.replace chemicals
