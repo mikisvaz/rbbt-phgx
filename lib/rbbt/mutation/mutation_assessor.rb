@@ -87,7 +87,7 @@ module MutationAssessor
         acc = TSV.setup(acc.merge(predict(list)))
       end
       acc
-    end || {}
+    end
   end
 
   def self.add_predictions(tsv)
