@@ -17,6 +17,10 @@ module KEGG
   end
 
 
+  def self.index2genes
+    @@index2genes ||= KEGG.gene_pathway.tsv :key_field => "KEGG Pathway ID", :fields => ["KEGG Gene ID"], :persist => true, :type => :flat, :merge => true
+  end
+
   def self.index2ens
     @@index2ens ||= KEGG.identifiers.index :persist => true
   end
