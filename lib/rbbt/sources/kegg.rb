@@ -55,7 +55,4 @@ module Gene
       Gene.setup(KEGG.index2ens[self], "Ensembl Gene ID", organism)
     end
   end
-
-
-
 end
