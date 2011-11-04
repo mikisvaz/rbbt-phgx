@@ -6,7 +6,7 @@ module SIFT
   URL_ENSP="http://sift.jcvi.org/sift-bin/retrieve_enst.pl"
 
   def self.predict(mutations)
-    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data" => "'ENSP=#{mutations.collect{|p| p * ","} * "\n"}'"}, :nocache => false))
+    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data" => "'ENSP=#{mutations.collect{|mut| mut.sub(':', ',')} * "\n"}'"}, :nocache => false))
 
     rows = []
     doc.css('tr').each do |row|
@@ -15,11 +15,8 @@ module SIFT
 
     rows.shift
 
-    if Array === mutations
-      rows
-    else
-      rows.first
-    end
+    TSV.open StringIO.new(rows.collect{|row| row.collect{|v| v.sub(/(ENSP\d+),/,'\1:')} * "\t"} * "\n"), :list,
+      :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"]
   end
 
   def self.predict_aminoacid_mutation(accession, mutations)

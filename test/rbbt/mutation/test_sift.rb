@@ -16,10 +16,11 @@ class TestSIFT < Test::Unit::TestCase
 
     assert_equal "TOLERATED", SIFT.predict_aminoacid_mutation_batch( [[accession, mutation]]).first[3]
   end
-  def test_predict_aminoacid_mutation_batch
+
+  def test_predict
     ensp = "ENSP00000224605"
     mutation = "A63T"
-    assert_equal "TOLERATED", SIFT.predict( [[ensp, mutation]]).first[5]
+    assert_equal "TOLERATED", SIFT.predict( [[ensp, mutation] * ":"]).values.first["Prediction"]
   end
 
 end
