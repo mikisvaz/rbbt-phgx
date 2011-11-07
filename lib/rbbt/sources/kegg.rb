@@ -55,4 +55,8 @@ module Gene
       Gene.setup(KEGG.index2ens[self], "Ensembl Gene ID", organism)
     end
   end
+
+  property :kegg_pathways => :array2single do
+    @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at *self.to_kegg
+  end
 end

@@ -15,8 +15,12 @@ module SIFT
 
     rows.shift
 
-    TSV.open StringIO.new(rows.collect{|row| row.collect{|v| v.sub(/(ENSP\d+),/,'\1:')} * "\t"} * "\n"), :list,
-      :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"]
+    if rows.any?
+      TSV.open StringIO.new(rows.collect{|row| row.collect{|v| v.sub(/(ENSP\d+),/,'\1:')} * "\t"} * "\n"), :list,
+        :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"]
+    else
+      TSV.setup({}, :type => :list, :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"])
+    end
   end
 
   def self.predict_aminoacid_mutation(accession, mutations)
