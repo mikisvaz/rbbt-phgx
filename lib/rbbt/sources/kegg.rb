@@ -38,25 +38,39 @@ module KEGG
   end
 end
 
-module Gene
+if defined? Entity 
 
-  def to_kegg
-    if Array === self
-      Gene.setup(KEGG.index2kegg.values_at(*to("Ensembl Gene ID")), "KEGG Gene ID", organism)
-    else
-      Gene.setup(KEGG.index2kegg[to("Ensembl Gene ID")], "KEGG Gene ID", organism)
+  module KeggPathway
+    extend Entity
+    self.format = "KEGG Pathway ID"
+
+    property :name => :single2array do
+      KEGG.id2name self
     end
   end
 
-  def from_kegg
-    if Array === self
-      Gene.setup(KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism)
-    else
-      Gene.setup(KEGG.index2ens[self], "Ensembl Gene ID", organism)
-    end
-  end
+  if defined? Gene and Entity === Gene
+    module Gene
 
-  property :kegg_pathways => :array2single do
-    @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at *self.to_kegg
+      def to_kegg
+        if Array === self
+          Gene.setup(KEGG.index2kegg.values_at(*to("Ensembl Gene ID")), "KEGG Gene ID", organism)
+        else
+          Gene.setup(KEGG.index2kegg[to("Ensembl Gene ID")], "KEGG Gene ID", organism)
+        end
+      end
+
+      def from_kegg
+        if Array === self
+          Gene.setup(KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism)
+        else
+          Gene.setup(KEGG.index2ens[self], "Ensembl Gene ID", organism)
+        end
+      end
+
+      property :kegg_pathways => :array2single do
+        @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at *self.to_kegg
+      end
+    end
   end
 end

@@ -6,7 +6,8 @@ module SIFT
   URL_ENSP="http://sift.jcvi.org/sift-bin/retrieve_enst.pl"
 
   def self.predict(mutations)
-    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data" => "'ENSP=#{mutations.collect{|mut| mut.sub(':', ',')} * "\n"}'"}, :nocache => false))
+    data_str = mutations.collect{|mut| mut.sub(':', ',')}.uniq * "\n"
+    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data=" => "'ENSP=#{data_str}'"}, :nocache => false))
 
     rows = []
     doc.css('tr').each do |row|
