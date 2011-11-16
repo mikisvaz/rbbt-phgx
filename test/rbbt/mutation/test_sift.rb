@@ -23,4 +23,11 @@ class TestSIFT < Test::Unit::TestCase
     assert_equal "TOLERATED", SIFT.predict( [[ensp, mutation] * ":"]).values.first["Prediction"]
   end
 
+  def test_chunked_predict
+    ensp = "ENSP00000224605"
+    mutation = "A63T"
+    assert_equal "TOLERATED", SIFT.chunked_predict( [[ensp, mutation] * ":"] * 2000).values.first["Prediction"]
+  end
+
+
 end

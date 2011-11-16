@@ -24,6 +24,15 @@ module SIFT
     end
   end
 
+  def self.chunked_predict(mutations)
+    chunks = mutations.length.to_f / 100
+    chunks = chunks.ceil
+    tsv = TSV.setup({}, :type => :list, :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"])
+    Misc.divide(mutations.sort, chunks).inject(tsv) do |acc, list|
+        acc = TSV.setup(acc.merge(predict(list)))
+    end
+  end
+
   def self.predict_aminoacid_mutation(accession, mutations)
     doc = Nokogiri::HTML(Open.read(URL_AMINOACID, :wget_options => {"--post-data" => "'GI=#{[accession, mutations].flatten * ","}&sequences_to_select=BEST&seq_identity_filter=90'"}, :nocache => false))
 
