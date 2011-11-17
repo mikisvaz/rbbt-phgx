@@ -7,7 +7,7 @@ module SIFT
 
   def self.predict(mutations)
     data_str = mutations.collect{|mut| mut.sub(':', ',')}.uniq * "\n"
-    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data=" => "'ENSP=#{data_str}'"}, :nocache => false))
+    doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data=" => "'ENSP=#{data_str}'"}))
 
     rows = []
     doc.css('tr').each do |row|
@@ -28,7 +28,7 @@ module SIFT
     chunks = mutations.length.to_f / 100
     chunks = chunks.ceil
     tsv = TSV.setup({}, :type => :list, :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"])
-    Misc.divide(mutations.sort, chunks).inject(tsv) do |acc, list|
+    Misc.divide(mutations.uniq.sort, chunks).inject(tsv) do |acc, list|
         acc = TSV.setup(acc.merge(predict(list)))
     end
   end
