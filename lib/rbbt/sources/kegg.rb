@@ -48,6 +48,11 @@ if defined? Entity
       KEGG.id2name self
     end
 
+    property :description => :single2array do
+      KEGG.description(self)
+    end
+
+
     property :genes => :array2single do
       KEGG.index2genes.values_at(*self).collect{|list| Gene.setup(list, "KEGG Gene ID", "Hsa")}
     end
