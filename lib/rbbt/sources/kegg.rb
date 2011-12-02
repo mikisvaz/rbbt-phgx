@@ -45,13 +45,12 @@ if defined? Entity
     self.format = "KEGG Pathway ID"
 
     property :name => :single2array do
-      KEGG.id2name self
+      KEGG.id2name(self).sub(/ - Homo.*/,'')
     end
 
     property :description => :single2array do
       KEGG.description(self)
     end
-
 
     property :genes => :array2single do
       KEGG.index2genes.values_at(*self).collect{|list| Gene.setup(list, "KEGG Gene ID", "Hsa")}
