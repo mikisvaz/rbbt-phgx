@@ -6,6 +6,7 @@ module KEGG
   self.pkgdir = "phgx"
   self.subdir = "share/kegg"
 
+
   KEGG.claim KEGG.root.find, :rake, Rbbt.share.install.KEGG.Rakefile.find(:lib)
 
   def self.names
@@ -43,6 +44,14 @@ if defined? Entity
   module KeggPathway
     extend Entity
     self.format = "KEGG Pathway ID"
+
+    def self.filter(query, field = nil, options = nil, entity = nil)
+      return true if query == entity
+
+      return true if KeggPathway.setup(entity.dup, options.merge(:format => field)).name.index query
+
+      false
+    end
 
     property :name => :single2array do
       KEGG.id2name(self).sub(/ - Homo.*/,'')
