@@ -45,6 +45,8 @@ if defined? Entity
     extend Entity
     self.format = "KEGG Pathway ID"
 
+    self.annotation :organism
+
     def self.filter(query, field = nil, options = nil, entity = nil)
       return true if query == entity
 
@@ -61,15 +63,19 @@ if defined? Entity
       KEGG.description(self)
     end
 
-    property :genes => :array2single do
-      KEGG.index2genes.values_at(*self).collect{|list| Gene.setup(list, "KEGG Gene ID", "Hsa")}
+    property :genes => :array2single do |organism|
+      organism ||= self.organism
+      @genes ||= KEGG.index2genes.values_at(*self).
+        each{|pth| pth.organism = organism if pth.respond_to? :organism }
     end
   end
 
   if defined? Gene and Entity === Gene
     module Gene
+      self.format = "KEGG Gene ID"
 
       def to_kegg
+        return self if format == "KEGG Gene ID"
         if Array === self
           Gene.setup(KEGG.index2kegg.values_at(*to("Ensembl Gene ID")), "KEGG Gene ID", organism)
         else
@@ -78,6 +84,7 @@ if defined? Entity
       end
 
       def from_kegg
+        return self unless format == "KEGG Gene ID"
         if Array === self
           Gene.setup(KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism)
         else
@@ -85,8 +92,15 @@ if defined? Entity
         end
       end
 
+      property :to! => :array2single do |new_format|
+        return self if format == new_format
+        list = self.from_kegg
+        Gene.setup(Translation.job(:tsv_translate, "", :organism => organism, :genes => list, :format => new_format).exec.values_at(*list), new_format, organism)
+      end
+
       property :kegg_pathways => :array2single do
-        @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at *self.to_kegg
+        @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at(*self.to_kegg).
+          each{|pth| pth.organism = organism if pth.respond_to? :organism }
       end
     end
   end
