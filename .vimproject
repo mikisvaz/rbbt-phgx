@@ -8,10 +8,9 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    cancer.rb
    matador.rb
    kegg.rb
-   reactome.rb
    nci.rb
+   reactome.rb
    pharmagkb.rb
-   sift.rb
    stitch.rb
    string.rb
    hprd.rb
