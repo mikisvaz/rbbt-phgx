@@ -80,7 +80,7 @@ module MutationAssessor
   def self.chunked_predict(mutations)
     chunks = mutations.length.to_f / 1000
     chunks = chunks.ceil
-    Misc.divide(mutations.sort, chunks).inject(nil) do |acc, list|
+    Misc.divide(mutations.sort_by{|m| m * ":"}, chunks).inject(nil) do |acc, list|
       if acc.nil?
         acc = predict(list)
       else
