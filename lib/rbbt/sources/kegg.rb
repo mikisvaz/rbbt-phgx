@@ -45,7 +45,9 @@ if defined? Entity
     self.format = "KEGG Pathway ID"
 
     property :name => :single2array do
-      KEGG.id2name(self).sub(/ - Homo.*/,'')
+      return nil if self.nil?
+      name = KEGG.id2name(self)
+      name.sub(/ - Homo.*/,'') unless name.nil?
     end
 
     property :description => :single2array do
@@ -61,6 +63,7 @@ if defined? Entity
     module Gene
 
       def to_kegg
+        return self if format == "KEGG Gene ID"
         if Array === self
           Gene.setup(KEGG.index2kegg.values_at(*to("Ensembl Gene ID")), "KEGG Gene ID", organism)
         else
@@ -69,6 +72,7 @@ if defined? Entity
       end
 
       def from_kegg
+        return to("Ensembl Gene ID") unless format == "KEGG Gene ID"
         if Array === self
           Gene.setup(KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism)
         else
