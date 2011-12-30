@@ -100,7 +100,7 @@ if defined? Entity
 
       property :kegg_pathways => :array2single do
         @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at(*self.to_kegg).
-          each{|pth| pth.organism = organism if pth.respond_to? :organism }
+          each{|pth| pth.organism = organism if pth.respond_to? :organism }.tap{|o| KeggPathway.setup(o, organism)}
       end
     end
   end
