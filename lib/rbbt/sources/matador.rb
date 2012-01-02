@@ -6,5 +6,4 @@ module Matador
   self.subdir = "share/matador"
 
   Matador.claim Matador.root.find, :rake, Rbbt.share.install.Matador.Rakefile.find(:lib)
-
 end
