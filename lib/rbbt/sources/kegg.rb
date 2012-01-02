@@ -14,20 +14,20 @@ module KEGG
   end
 
   def self.descriptions
-    @@descriptions ||= KEGG.pathways.tsv :fields => ["Pathway Description"], :persist => true, :type => :single
+    @@descriptions ||= KEGG.pathways.tsv(:fields => ["Pathway Description"], :persist => true, :type => :single).tap{|o| o.unnamed = true}
   end
 
 
   def self.index2genes
-    @@index2genes ||= KEGG.gene_pathway.tsv :key_field => "KEGG Pathway ID", :fields => ["KEGG Gene ID"], :persist => true, :type => :flat, :merge => true
+    @@index2genes ||= KEGG.gene_pathway.tsv(:key_field => "KEGG Pathway ID", :fields => ["KEGG Gene ID"], :persist => true, :type => :flat, :merge => true).tap{|o| o.unnamed = true}
   end
 
   def self.index2ens
-    @@index2ens ||= KEGG.identifiers.index :persist => true
+    @@index2ens ||= KEGG.identifiers.index(:persist => true).tap{|o| o.unnamed = true}
   end
 
   def self.index2kegg
-    @@index2kegg ||= KEGG.identifiers.index :target => "KEGG Gene ID", :persist => true
+    @@index2kegg ||= KEGG.identifiers.index(:target => "KEGG Gene ID", :persist => true).tap{|o| o.unnamed = true}
   end
 
   def self.id2name(id)
@@ -65,8 +65,8 @@ if defined? Entity
       KEGG.description(self)
     end
 
-    property :genes => :array2single do |organism|
-      organism ||= self.organism
+    property :genes => :array2single do |*args|
+      organism = args.first || self.organism
       @genes ||= KEGG.index2genes.values_at(*self).
         each{|pth| pth.organism = organism if pth.respond_to? :organism }
     end
@@ -85,19 +85,46 @@ if defined? Entity
         end
       end
 
-      def from_kegg
-        return to("Ensembl Gene ID") unless format == "KEGG Gene ID"
+      def _from_kegg
+        return self.clean_annotations unless format == "KEGG Gene ID"
         if Array === self
-          Gene.setup(KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism)
+          KEGG.index2ens.values_at(*self)
         else
-          Gene.setup(KEGG.index2ens[self], "Ensembl Gene ID", organism)
+          KEGG.index2ens[self]
         end
+      end
+
+      def from_kegg
+        return self unless format == "KEGG Gene ID"
+        Gene.setup(_from_kegg, "Ensembl Gene ID", organism)
+      end
+
+      property :_to => :array2single do |new_format|
+        return self if format == new_format
+        list = self._from_kegg 
+
+        tsv = Translation.job(:tsv_translate, "", :organism => organism, :genes => list, :format => new_format).exec.tap{|o| o.unnamed = true}
+
+        tsv.values_at(*list)
       end
 
       property :to! => :array2single do |new_format|
         return self if format == new_format
-        list = self.from_kegg
-        Gene.setup(Translation.job(:tsv_translate, "", :organism => organism, :genes => list, :format => new_format).exec.values_at(*list), new_format, organism)
+
+        new = _to(new_format)
+        new.each_with_index do |n,i|
+          c = self.annotated_array_clean_get_brackets(i)
+          if c.nil? or n.nil?
+            self[i] = nil
+          else
+            c.replace n
+          end
+        end
+      end
+
+      property :to => :array2single do |new_format|
+        return self if format == new_format
+        Gene.setup(_to(new_format), new_format, organism)
       end
 
       property :kegg_pathways => :array2single do
