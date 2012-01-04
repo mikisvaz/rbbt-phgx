@@ -1,4 +1,4 @@
-#Associated Gene Name	Name	GeneID	Chr	Chr Band	Cancer Somatic Mut	Cancer Germline Mut	Tumour Types  (Somatic Mutations)	Tumour Types (Germline Mutations)	Cancer Syndrome	Tissue Type	Cancer Molecular Genetics	Mutation Type 	Translocation Partner	Other Germline Mut	Other Syndrome/Disease
+#Associated Gene Name	Name	GeneID	Chr	Chr Band	Cancer Somatic Mut	Cancer Germline Mut	Tumour Types (Somatic Mutations)	Tumour Types (Germline Mutations)	Cancer Syndrome	Tissue Type	Cancer Molecular Genetics	Mutation Type 	Translocation Partner	Other Germline Mut	Other Syndrome/Disease
 ABL1	v-abl Abelson murine leukemia viral oncogene homolog 1	25	9	9q34.1 	yes		CML, ALL, T-ALL			L	Dom	T, Mis	BCR, ETV6, NUP214		
 ABL2	v-abl Abelson murine leukemia viral oncogene homolog 2	27	1	1q24-q25 	yes		AML			L	Dom	T	ETV6		
 ACSL3	acyl-CoA synthetase long-chain family member 3	2181	2	2q36	yes		prostate			E	Dom	T	ETV1		
