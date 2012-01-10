@@ -28,13 +28,23 @@ module MutationAssessor
 
     Log.debug "Querying Mutation Assessor for: #{vars.split(/\n/).length}"
     tries = 0
+    nocache = false
     begin
       doc = nil
       TmpFile.with_file(post_data) do |post_file|
-        doc = Nokogiri::HTML(Open.read(URL, :wget_options => {"--post-file" => post_file }, :nocache => false))
+        Log.medium "Updating cache:" if nocache == :update
+        doc = Nokogiri::HTML(Open.read(URL, :wget_options => {"--post-file" => post_file }, :nocache => nocache))
       end
 
       textareas = doc.css('textarea')
+
+      if textareas.empty?
+        puts "No text area"
+        puts doc
+        puts
+        raise NotDone, "No text aread found in response HTML"
+      end
+
       result = textareas.last.content
 
       if result =~ /Cannot parse variant/
@@ -46,12 +56,14 @@ module MutationAssessor
 
       raise NotDone, "Not done" if result =~ /\t.sent\t./
     rescue NotDone
-      Log.debug "Mutation Assessor not done, waiting:"
-      Log.debug result
-      
-      sleep 30
       tries += 1
+      nocache = :update
+
+      Log.medium "Mutation Assessor not done, waiting:"
+      sleep 30
+
       if tries < 10
+        Log.medium "Retrying mutation assessor"
         retry
       else
         raise "Error processing Mutation Assessor response"
@@ -145,14 +157,9 @@ module MutationAssessor
 
         next if uni_accs.compact.reject{|v| v.nil? or v.empty?}.empty?
 
-        ddd uni_accs
-
         mutations = values[protein_field]
-        ddd mutations
 
         uni_accs.zip(mutations).collect do |uni_acc,mutation|
-          ddd uni_acc
-          ddd mutation
           res = case
                 when (mutation.nil? or mutation.empty?)
                   "No Prediction"

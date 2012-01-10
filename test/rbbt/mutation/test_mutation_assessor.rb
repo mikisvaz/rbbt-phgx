@@ -3,16 +3,15 @@ require 'rbbt/mutation/mutation_assessor'
 
 class TestMutationAssessor < Test::Unit::TestCase
 
-  def _test_predict_aminoacid_mutation
+  def test_predict_aminoacid_mutation
     mutations = {
       "EGFR_HUMAN" => %w(R521K)
     }
 
-    puts MutationAssessor.predict(mutations)
     assert_equal 1, MutationAssessor.predict(mutations).length
   end
 
-  def _test_predict_aminoacid_mutation_tsv
+  def test_predict_aminoacid_mutation_tsv
     tsv = TSV.setup({"EGFR_HUMAN" => [%w(R521K)]}, :key_field => "UniProt/SwissProt ID", :fields => ["Protein Mutation"], :type => :double)
 
     assert_equal "neutral", MutationAssessor.add_predictions(tsv).slice("MutationAssessor:Prediction").values.first.flatten.first
@@ -26,7 +25,7 @@ class TestMutationAssessor < Test::Unit::TestCase
       "P53_HUMAN" => %w(R21K),
     }
 
-    puts MutationAssessor.chunked_predict(mutations)
+    assert(MutationAssessor.chunked_predict(mutations).include? "EGFR_HUMAN R521K")
   end
 
 
