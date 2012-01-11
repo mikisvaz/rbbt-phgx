@@ -54,7 +54,7 @@ module MutationAssessor
         raise "Cannot parse variants. Variants in file #{ variants }"
       end
 
-      raise NotDone, "Not done" if result =~ /\t.sent\t./
+      raise NotDone, "Not done" if result =~ /\t\[sent\]\t/
     rescue NotDone
       tries += 1
       nocache = :update
