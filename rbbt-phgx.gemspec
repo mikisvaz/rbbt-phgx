@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rbbt-phgx}
-  s.version = "0.3.1"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Miguel Vazquez"]
-  s.date = %q{2011-10-03}
+  s.date = %q{2012-01-13}
   s.description = %q{Pharmaco-genomics related data sources}
   s.email = %q{miguel.vazquez@fdi.ucm.es}
   s.extra_rdoc_files = [
@@ -29,11 +29,9 @@ Gem::Specification.new do |s|
     "lib/rbbt/sources/hprd.rb",
     "lib/rbbt/sources/kegg.rb",
     "lib/rbbt/sources/matador.rb",
-    "lib/rbbt/sources/nci.rb",
     "lib/rbbt/sources/pharmagkb.rb",
     "lib/rbbt/sources/pina.rb",
     "lib/rbbt/sources/reactome.rb",
-    "lib/rbbt/sources/sift.rb",
     "lib/rbbt/sources/stitch.rb",
     "lib/rbbt/sources/string.rb",
     "share/Cancer/anais_annotations",
