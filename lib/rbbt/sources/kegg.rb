@@ -85,47 +85,33 @@ if defined? Entity
         end
       end
 
-      def _from_kegg
+      def from_kegg
         return self.clean_annotations unless format == "KEGG Gene ID"
         if Array === self
-          KEGG.index2ens.values_at(*self)
+          Gene.setup KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism
         else
-          KEGG.index2ens[self]
-        end
-      end
-
-      def from_kegg
-        return self unless format == "KEGG Gene ID"
-        Gene.setup(_from_kegg, "Ensembl Gene ID", organism)
-      end
-
-      property :_to => :array2single do |new_format|
-        return self if format == new_format
-        list = self._from_kegg 
-
-        tsv = Translation.job(:tsv_translate, "", :organism => organism, :genes => list, :format => new_format).exec.tap{|o| o.unnamed = true}
-
-        tsv.values_at(*list)
-      end
-
-      property :to! => :array2single do |new_format|
-        return self if format == new_format
-
-        new = _to(new_format)
-        new.each_with_index do |n,i|
-          c = self.annotated_array_clean_get_brackets(i)
-          if c.nil? or n.nil?
-            self[i] = nil
-          else
-            c.replace n
-          end
+          Gene.setup KEGG.index2ens[self], "Ensembl Gene ID", organism
         end
       end
 
       property :to => :array2single do |new_format|
-        return self if format == new_format
-        Gene.setup(_to(new_format), new_format, organism)
+        case
+        when format == new_format
+          self 
+        when format == "KEGG Gene ID"
+          ensembl = from_kegg.clean_annotations
+          Gene.setup(Translation.job(:tsv_translate, "", :organism => organism, :genes => ensembl, :format => new_format).exec.values_at(*ensembl), new_format, organism)
+        when new_format == "KEGG Gene ID"
+          to_kegg
+        else
+          Gene.setup(Translation.job(:tsv_translate, "", :organism => organism, :genes => self, :format => new_format).exec.values_at(*self), new_format, organism)
+        end
       end
+
+      #property :to => :array2single do |new_format|
+      #  return self if format == new_format
+      #  to!(new_format).collect!{|v| Array === v ? v.first : v}
+      #end
 
       property :kegg_pathways => :array2single do
         @kegg_pathways ||= KEGG.gene_pathway.tsv(:persist => true, :key_field => "KEGG Gene ID", :fields => ["KEGG Pathway ID"], :type => :flat, :merge => true).values_at(*self.to_kegg).
