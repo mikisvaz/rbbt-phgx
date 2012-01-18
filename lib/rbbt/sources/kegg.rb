@@ -86,7 +86,7 @@ if defined? Entity
       end
 
       def from_kegg
-        return self.clean_annotations unless format == "KEGG Gene ID"
+        return self unless format == "KEGG Gene ID"
         if Array === self
           Gene.setup KEGG.index2ens.values_at(*self), "Ensembl Gene ID", organism
         else
