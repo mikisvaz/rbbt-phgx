@@ -107,6 +107,7 @@ if defined? Entity
           Gene.setup(Translation.job(:tsv_translate, "", :organism => organism, :genes => self, :format => new_format).exec.values_at(*self), new_format, organism)
         end
       end
+      persist :to
 
       #property :to => :array2single do |new_format|
       #  return self if format == new_format
