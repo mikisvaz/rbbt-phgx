@@ -23,7 +23,7 @@ module KEGG
   end
 
   def self.index2ens
-    @@index2ens ||= KEGG.identifiers.index(:persist => true, :unnamed => true)
+    @@index2ens ||= KEGG.identifiers.index(:persist => true)
   end
 
   def self.index2kegg
