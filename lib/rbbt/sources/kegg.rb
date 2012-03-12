@@ -10,24 +10,24 @@ module KEGG
   KEGG.claim KEGG.root.find, :rake, Rbbt.share.install.KEGG.Rakefile.find(:lib)
 
   def self.names
-    @@names ||= KEGG.pathways.tsv :fields => ["Pathway Name"], :persist => true, :type => :single
+    @@names ||= KEGG.pathways.tsv :fields => ["Pathway Name"], :persist => true, :type => :single, :unnamed => true
   end
 
   def self.descriptions
-    @@descriptions ||= KEGG.pathways.tsv(:fields => ["Pathway Description"], :persist => true, :type => :single).tap{|o| o.unnamed = true}
+    @@descriptions ||= KEGG.pathways.tsv(:fields => ["Pathway Description"], :persist => true, :type => :single, :unnamed => true)
   end
 
 
   def self.index2genes
-    @@index2genes ||= KEGG.gene_pathway.tsv(:key_field => "KEGG Pathway ID", :fields => ["KEGG Gene ID"], :persist => true, :type => :flat, :merge => true).tap{|o| o.unnamed = true}
+    @@index2genes ||= KEGG.gene_pathway.tsv(:key_field => "KEGG Pathway ID", :fields => ["KEGG Gene ID"], :persist => true, :type => :flat, :merge => true)
   end
 
   def self.index2ens
-    @@index2ens ||= KEGG.identifiers.index(:persist => true).tap{|o| o.unnamed = true}
+    @@index2ens ||= KEGG.identifiers.index(:persist => true, :unnamed => true)
   end
 
   def self.index2kegg
-    @@index2kegg ||= KEGG.identifiers.index(:target => "KEGG Gene ID", :persist => true).tap{|o| o.unnamed = true}
+    @@index2kegg ||= KEGG.identifiers.index(:target => "KEGG Gene ID", :persist => true)
   end
 
   def self.id2name(id)
@@ -60,6 +60,7 @@ if defined? Entity
       name = KEGG.id2name(self)
       name.sub(/ - Homo.*/,'') unless name.nil?
     end
+    persist :name
 
     property :description => :single2array do
       KEGG.description(self)
@@ -67,9 +68,10 @@ if defined? Entity
 
     property :genes => :array2single do |*args|
       organism = args.first || self.organism
-      @genes ||= KEGG.index2genes.values_at(*self).
-        each{|pth| pth.organism = organism if pth.respond_to? :organism }
+      KEGG.index2genes.values_at(*self).
+        each{|gene| gene.organism = organism if gene.respond_to? :organism }
     end
+    persist :genes
   end
 
   if defined? Gene and Entity === Gene
