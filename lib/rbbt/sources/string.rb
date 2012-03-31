@@ -7,3 +7,18 @@ module STRING
 
   STRING.claim STRING.root.find, :rake, Rbbt.share.install.STRING.Rakefile.find(:lib)
 end
+
+if defined? Entity and defined? Gene and Entity === Gene
+  module Gene
+    property :string_interactors => :array2single do |*args|
+      threshold = args.first || 0.85
+      string = STRING.protein_protein.tsv(:unnamed => true, :persist => true)
+      self.ensembl.collect do |gene|
+        interactors = gene.proteins.collect{|protein| Misc.zip_fields((string[protein] || [[],[]])).select{|i, score| score.to_i > threshold}.collect{|ints,s| ints}}.compact.flatten.uniq
+        Protein.setup(interactors, "Ensembl Protein ID", organism).transcript.gene.compact.uniq
+      end
+    end
+    persist :_ary_string_interactors
+  end
+end
+
