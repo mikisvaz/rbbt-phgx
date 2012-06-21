@@ -11,10 +11,11 @@ class TestPolyphen2 < Test::Unit::TestCase
 
   def test_batch
     query =<<-EOF
-A6NFZ4 Y34D
+A6NFZ4 34 Y D
     EOF
 
-    assert_equal "probably damaging", Polyphen2::Batch.predict(query)["A6NFZ4_Y34D"]["prediction"].first
+    assert_equal "probably damaging", Polyphen2::Batch.predict(query)["A6NFZ4:Y34D"]["prediction"]
+    assert_equal "probably damaging", Polyphen2::Batch.chunked_predict(query)["A6NFZ4:Y34D"]["prediction"]
   end
 end
 

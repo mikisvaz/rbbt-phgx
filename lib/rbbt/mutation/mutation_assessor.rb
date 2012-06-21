@@ -39,9 +39,9 @@ module MutationAssessor
       textareas = doc.css('textarea')
 
       if textareas.empty?
-        puts "No text area"
-        puts doc
-        puts
+        Log.debug "No text area"
+        Log.debug doc
+        Log.debug
         raise NotDone, "No text aread found in response HTML"
       end
 
@@ -89,14 +89,19 @@ module MutationAssessor
     end
   end
 
-  def self.chunked_predict(mutations)
-    chunks = mutations.length.to_f / 1000
+  def self.chunked_predict(mutations, max = 1000)
+    flattened_mutations = mutations.collect{|g,list| list.collect{|m| [g,m] } }.flatten(1)
+    chunks = flattened_mutations.length.to_f / max
     chunks = chunks.ceil
-    Misc.divide(mutations.sort_by{|m| m * ":"}, chunks).inject(nil) do |acc, list|
+
+    Log.debug("Mutation Assessor ran with #{chunks} chunks of #{ max } mutations") if chunks > 1
+    Misc.divide(flattened_mutations, chunks).inject(nil) do |acc, list|
+      unflattened_mutations = {}
+      list.each{|g,m| next if g.nil?; unflattened_mutations[g] ||= []; unflattened_mutations[g] << m}
       if acc.nil?
-        acc = predict(list)
+        acc = predict(unflattened_mutations)
       else
-        acc = TSV.setup(acc.merge(predict(list)))
+        acc = TSV.setup(acc.merge(predict(unflattened_mutations)))
       end
       acc
     end

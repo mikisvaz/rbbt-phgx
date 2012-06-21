@@ -31,52 +31,78 @@ module Polyphen2
       "_ggi_target_manage" => "Refresh",
     }
 
-  def self.predict(query)
-    options = OPTIONS.merge "_ggi_batch" => query
+    def self.predict(query)
+      options = OPTIONS.merge "_ggi_batch" => query
 
-    desc =  Digest::MD5.hexdigest(options.inspect)
-    options["description"] = desc
+      desc =  Digest::MD5.hexdigest(options.inspect)
+      options["description"] = desc
 
-    doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
-
-    sid = doc.css('input[name=sid]').attr('value')
-
-    options = REFRESH_OPTIONS.merge "sid" => sid
-    finished = false
-
-    view_link = nil
-    while not finished do
       doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
 
-      result_table =  doc.css('body > table')[1].css('table')[2]
+      sid = doc.css('input[name=sid]').attr('value')
 
-      rows = result_table.css('tr')
+      options = REFRESH_OPTIONS.merge "sid" => sid
+      finished = false
 
-      row = rows.select{|row| row.css('td').length == 6}.select{|row| row.css('td').last.content.strip == desc}.first
+      view_link = nil
+      while not finished do
+        doc = Nokogiri::HTML(Open.read(Polyphen2::URL, :wget_options => {"--post-data" => "'#{options.collect{|k,v| [k,v] * "="} * "&"}'"}, :nocache => true))
 
-      cells = row.css('td')
-      if cells[2].content =~ /Error/
-        view_link = nil
-        break
+        result_table =  doc.css('body > table')[1].css('table')[2]
+
+        rows = result_table.css('tr')
+
+        row = rows.select{|row| row.css('td').length == 6}.select{|row| row.css('td').last.content.strip == desc}.first
+
+        cells = row.css('td')
+        if cells[2].content =~ /Error/
+          view_link = nil
+          break
+        end
+
+        if cells[1].content =~ /Short/
+          view_link =  cells[1].css('a').attr('href')
+          break
+        end
+
+        sleep 3
       end
 
-      if cells[1].content =~ /Short/
-        view_link =  cells[1].css('a').attr('href')
-        break
+      return nil if view_link.nil?
+
+      tsv = TSV.open Open.open(Polyphen2::URL_BASE + view_link, :nocache => true), :double, :merge => true, :fix => Proc.new{|l| l.gsub(/ *\t */, "\t")}
+      tsv.fields = tsv.fields.collect{|f| f.strip}
+      tsv.key_field = tsv.key_field.strip
+
+      new_tsv = TSV.setup({}, :key_field => "Protein Mutation", :fields => tsv.fields)
+
+      tsv.through do |acc, values|
+        values.zip_fields.each do |v|
+          pos, wt, mt = v.values_at "o_pos", "o_aa1", "o_aa2"
+          key = [acc, [wt,pos,mt] * "" ] * ":"
+          new_tsv[key] = v
+        end
       end
 
-      sleep 3
+      return new_tsv
     end
 
-    return nil if view_link.nil?
+    def self.chunked_predict(query, max = 1000)
+      mutations = query.split("\n")
+      chunks = mutations.length.to_f / max
+      chunks = chunks.ceil
 
-    tsv = TSV.open Open.open(Polyphen2::URL_BASE + view_link, :nocache => true), :double, :merge => true, :fix => Proc.new{|l| l.gsub(/ *\t */, "\t")}
-    tsv.fields = tsv.fields.collect{|f| f.strip}
-    tsv.key_field = tsv.key_field.strip
-
-    return tsv
-  end
-
+      Log.debug("Polyphen2 ran with #{chunks} chunks of #{ max } mutations") if chunks > 1
+      Misc.divide(mutations, chunks).inject(nil) do |acc, list|
+        list = list * "\n"
+        if acc.nil?
+          acc = predict(list)
+        else
+          acc = TSV.setup(acc.merge(predict(list)))
+        end
+        acc
+      end
+    end
 
   end
 
