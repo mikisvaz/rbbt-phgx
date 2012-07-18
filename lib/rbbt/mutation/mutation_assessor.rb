@@ -40,8 +40,7 @@ module MutationAssessor
 
       if textareas.empty?
         Log.debug "No text area"
-        Log.debug doc
-        Log.debug
+        Log.debug doc.to_s
         raise NotDone, "No text aread found in response HTML"
       end
 
@@ -90,7 +89,7 @@ module MutationAssessor
   end
 
   def self.chunked_predict(mutations, max = 1000)
-    flattened_mutations = mutations.collect{|g,list| list.collect{|m| [g,m] } }.flatten(1)
+    flattened_mutations = mutations.collect{|g,list| list = [list] unless Array === list; list.collect{|m| [g,m] } }.flatten(1)
     chunks = flattened_mutations.length.to_f / max
     chunks = chunks.ceil
 
