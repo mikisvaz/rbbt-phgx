@@ -34,6 +34,11 @@ module KEGG
     names[id]
   end
 
+  def self.name2id(name)
+    names.select{|id,n| n.downcase.index(name.downcase) == 0}.collect{|id,n| id} rescue []
+  end
+
+
   def self.description(id)
     descriptions[id]
   end

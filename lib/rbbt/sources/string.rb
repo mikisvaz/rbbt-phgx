@@ -22,7 +22,7 @@ if defined? Entity and defined? Gene and Entity === Gene
 
       all
     end
-    persist :_ary_string_interactors
+    #persist :_ary_string_interactors
   end
 end
 
