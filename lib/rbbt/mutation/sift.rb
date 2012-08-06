@@ -9,6 +9,11 @@ module SIFT
     data_str = mutations.collect{|mut| mut.sub(':', ',')}.uniq * "\n"
     doc = Nokogiri::HTML(Open.read(URL_ENSP, :wget_options => {"--post-data=" => "'ENSP=#{data_str}'"}))
 
+    if doc.to_s.match(/Your computer has exceeded its daily limit/)
+      Open.clean_cache(URL_ENSP, :wget_options => {"--post-data=" => "'ENSP=#{data_str}'"})
+      raise "Daily limit reached" 
+    end
+
     rows = []
     doc.css('tr').each do |row|
       rows << row.css('td').collect{|cell| cell.content.strip.sub /.*?&nbsp/, ""}
