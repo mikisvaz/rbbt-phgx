@@ -16,7 +16,7 @@ module SIFT
 
     rows = []
     doc.css('tr').each do |row|
-      rows << row.css('td').collect{|cell| cell.content.strip.sub /.*?&nbsp/, ""}
+      rows << row.css('td').collect{|cell| content = cell.content.strip; content.sub(/\s*&nbsp.*/, "").sub(/[^\w,]*$/,'')}
     end
 
     rows.shift
