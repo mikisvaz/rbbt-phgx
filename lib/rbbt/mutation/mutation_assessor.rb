@@ -11,6 +11,7 @@ module MutationAssessor
   # mutations is a hash of genes in Uniprot protein accession pointing to lists
   # of aminoacid substitutions
   def self.predict(mutations)
+    return TSV.setup({}, :header_hash => "", :type => :list) if mutations.empty? or mutations.nil?
     vars = mutations.collect{|gene, list|
       list = [list] unless Array === list
       list.collect do |mut|
@@ -69,11 +70,11 @@ module MutationAssessor
       end
     end
 
-    if result.empty?
+    if result.empty? and mutations.any?
       tmp = TmpFile.tmp_file
       html = tmp + ".html"
       variants = tmp + ".list"
-      Open.write(tmp, doc.content)
+      Open.write(html, doc.content)
       Open.write(variants, post_data )
       raise "Result empty. Possible error. html in #{ html }, variants in #{variants}" 
     end
