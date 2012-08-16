@@ -1,8 +1,8 @@
 require File.join(File.dirname(__FILE__),'../lib/rake_helper')
 
-define_source_tasks  "Homo sapiens-20110225.txt" => "http://csbi.ltdk.helsinki.fi/pina/download/Homo%20sapiens-20110225.txt"
+define_source_tasks  "Homo sapiens-20110628.txt" => "http://cbg.garvan.unsw.edu.au/pina/download/Homo%20sapiens-20110628.txt"
 
-process_tsv :protein_protein, 'Homo sapiens-20110225.txt',
+process_tsv :protein_protein, 'Homo sapiens-20110628.txt',
   :key         => 0, 
   :fix         => lambda{|l| l.gsub("uniprotkb:", '').gsub("(gene name)",'').gsub("pubmed:",'').gsub("|", ';;').gsub(/\([^)]+\)/,'')}, 
   :fields      => [1,6,8], 
