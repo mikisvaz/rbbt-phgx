@@ -5,7 +5,7 @@ require 'digest/md5'
 module MutationAssessor
 
   class NotDone < StandardError; end
-  URL="http://mutationassessor.org/"
+  URL="http://mutationassessor.org/v1/"
   ASTERISK = "*"[0]
 
   # mutations is a hash of genes in Uniprot protein accession pointing to lists
@@ -37,7 +37,7 @@ module MutationAssessor
         doc = Nokogiri::HTML(Open.read(URL, :wget_options => {"--post-file" => post_file }, :nocache => nocache))
       end
 
-      textareas = doc.css('textarea')
+      textareas = doc.css('p')
 
       if textareas.empty?
         Log.debug "No text area"
@@ -136,19 +136,15 @@ module MutationAssessor
 
     data.sort!
 
-
     predictions = {}
     predict(data).each{|uni_acc, values| 
       protein, mutation = uni_acc.split(/\s+/)
 
-      values = values.zip_fields
-      values.each do |v|
-        pred     = v["Func. Impact"]
-        predictions[protein] ||= {}
-        predictions[protein][mutation] = pred
-      end
+      pred     = values["Func. Impact"]
+      predictions[protein] ||= {}
+      predictions[protein][mutation] = pred
     }
-
+    
     uni_acc_pos = tsv.identify_field "UniProt/SwissProt ID" 
     protein_field = tsv.identify_field "Protein Mutation" 
  
@@ -174,11 +170,11 @@ module MutationAssessor
                   "No Prediction"
                 else
                   list = []
-                  list = predictions[uni_acc][mutation] if predictions.include? uni_acc
-                  if list.nil?
+                  pred = predictions[uni_acc][mutation] if predictions.include? uni_acc
+                  if pred.nil?
                     "No Prediction"
                   else
-                    list.first
+                    pred
                   end
                 end
           res
