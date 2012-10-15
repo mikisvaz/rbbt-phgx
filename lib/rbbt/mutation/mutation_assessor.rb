@@ -5,7 +5,7 @@ require 'digest/md5'
 module MutationAssessor
 
   class NotDone < StandardError; end
-  URL="http://mutationassessor.org/v1/"
+  URL="http://mutationassessor.org/"
   ASTERISK = "*"[0]
 
   # mutations is a hash of genes in Uniprot protein accession pointing to lists
