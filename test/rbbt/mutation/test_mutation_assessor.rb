@@ -5,7 +5,7 @@ class TestMutationAssessor < Test::Unit::TestCase
 
   def test_predict_aminoacid_mutation
     mutations = {
-      "EGFR_HUMAN" => %w(R521K)
+      "EGFR_HUMAN" => %w(R521E)
     }
 
     assert_equal 1, MutationAssessor.predict(mutations).length
@@ -27,9 +27,5 @@ class TestMutationAssessor < Test::Unit::TestCase
 
     assert(MutationAssessor.chunked_predict(mutations).include? "EGFR_HUMAN R521K")
   end
-
-
-
-
 end
 

@@ -5,7 +5,7 @@ require 'digest/md5'
 module MutationAssessor
 
   class NotDone < StandardError; end
-  URL="http://mutationassessor.org/"
+  URL="http://mutationassessor.org"
   ASTERISK = "*"[0]
 
   # mutations is a hash of genes in Uniprot protein accession pointing to lists
@@ -81,6 +81,8 @@ module MutationAssessor
 
     result.sub! /^\t/, ''
     result.gsub! /\n\s*\d+\s*\t/s, "\n"
+
+    Log.medium "Mutation Assessor DONE."
 
     if result.empty?
       TSV.setup({}, :header_hash => "", :type => :list)
