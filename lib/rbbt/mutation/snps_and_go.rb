@@ -14,7 +14,7 @@ module SNPSandGO
 
     res = Open.read(url)
 
-    raise "Error in prediction" unless res =~ /RESULTS/
+    raise "Error in prediction: #{$1}" if res =~ /ERROR: (.*)/
 
     res.match(/Position\s+WT\s+NEW\s+Effect\s+RI\n\s+\d+\s+[A-Z]\s+[A-Z]\s+(\w+)\s+(\d+)/).values_at 1,2
   end
