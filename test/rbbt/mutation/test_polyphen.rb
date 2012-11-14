@@ -2,7 +2,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), '../..', 'test_helpe
 require 'rbbt/mutation/polyphen'
 
 class TestPolyphen2 < Test::Unit::TestCase
-  def test_predict_disease
+  def _test_predict_disease
     accession = "A6NFZ4"
     mutation =  "Y34D"
 
@@ -14,6 +14,7 @@ class TestPolyphen2 < Test::Unit::TestCase
 A6NFZ4 34 Y D
     EOF
 
+    ddd Polyphen2::Batch.predict(query)["A6NFZ4:Y34D"]
     assert_equal "probably damaging", Polyphen2::Batch.predict(query)["A6NFZ4:Y34D"]["prediction"]
     assert_equal "probably damaging", Polyphen2::Batch.chunked_predict(query)["A6NFZ4:Y34D"]["prediction"]
   end

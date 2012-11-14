@@ -65,7 +65,7 @@ module Polyphen2
           break
         end
 
-        sleep 3
+        sleep 5
       end
 
       return nil if view_link.nil?
