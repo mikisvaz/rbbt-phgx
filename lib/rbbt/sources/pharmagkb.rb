@@ -5,5 +5,5 @@ module PharmaGKB
   self.pkgdir = "phgx"
   self.subdir = "share/pharmagkb"
 
-  PharmaGKB.claim PharmaGKB.root.find, :rake, Rbbt.share.install.PharmaGKB.Rakefile.find(:lib)
+  PharmaGKB.claim PharmaGKB.root, :rake, Rbbt.share.install.PharmaGKB.Rakefile.find(:lib)
 end
