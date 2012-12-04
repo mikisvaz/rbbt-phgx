@@ -87,7 +87,15 @@ module MutationAssessor
     if result.empty?
       TSV.setup({}, :header_hash => "", :type => :list)
     else
-      TSV.open(StringIO.new(result), :header_hash => "", :type => :list)
+      res = TSV.open(StringIO.new(result), :header_hash => "", :type => :list)
+      res = res.slice((res.fields - ["Mapping issue"]))
+      tmp = TmpFile.tmp_file
+      forig = tmp + ".orig"
+      fres = tmp + ".res"
+      Open.write(forig, result )
+      Open.write(fres, res.to_s )
+
+      res
     end
   end
 
@@ -97,7 +105,9 @@ module MutationAssessor
     chunks = chunks.ceil
 
     Log.debug("Mutation Assessor ran with #{chunks} chunks of #{ max } mutations") if chunks > 1
+    num = 1
     Misc.divide(flattened_mutations, chunks).inject(nil) do |acc, list|
+      Log.debug("Mutation Assessor ran with #{chunks} chunks: chunk #{num}") if chunks > 1
       unflattened_mutations = {}
       list.each{|g,m| next if g.nil?; unflattened_mutations[g] ||= []; unflattened_mutations[g] << m}
       if acc.nil?
@@ -105,6 +115,7 @@ module MutationAssessor
       else
         acc = TSV.setup(acc.merge(predict(unflattened_mutations)))
       end
+      num += 1
       acc
     end
   end

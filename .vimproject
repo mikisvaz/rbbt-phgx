@@ -23,6 +23,9 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    sift.rb
    polyphen.rb
    mutation_assessor.rb
+   transFIC.rb
+   chasm.rb
+   oncodriveFM.rb
   }
  }
  test=test {
@@ -43,6 +46,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
  share=share{
   install=install{
    software=software{
+    OncodriveFM
    }
    lib=lib{
     rake_helper.rb
