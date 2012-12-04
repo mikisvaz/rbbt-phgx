@@ -89,12 +89,6 @@ module MutationAssessor
     else
       res = TSV.open(StringIO.new(result), :header_hash => "", :type => :list)
       res = res.slice((res.fields - ["Mapping issue"]))
-      tmp = TmpFile.tmp_file
-      forig = tmp + ".orig"
-      fres = tmp + ".res"
-      Open.write(forig, result )
-      Open.write(fres, res.to_s )
-
       res
     end
   end
