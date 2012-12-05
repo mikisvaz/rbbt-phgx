@@ -22,15 +22,21 @@ module TransFIC
 
     Log.debug "Querying TransFIC for: #{mutations.length} mutations"
 
-    puts searchText
     TmpFile.with_file(searchText) do |file|
       test_url = CMD.cmd("curl -X PUT -T '#{ file }' '#{ URL }'").read
-      result = 'executing'
-      while result =~ /executing/
-        sleep 2
+
+      result = nil
+
+      Misc.insist do
         result = CMD.cmd("curl -X GET '#{ test_url }'").read
+        raise result.split("\n").select{|line| line =~ /Error/}.first if result =~ /Error/
+
+        while result =~ /executing/
+          sleep 10
+          result = CMD.cmd("curl -X GET '#{ test_url }'").read
+        end
+        raise result.split("\n").select{|line| line =~ /Error/}.first if result =~ /Error/
       end
-      raise result.split("\n").select{|line| line =~ /Error/}.first if result =~ /Error/
 
       tsv = TSV.setup({}, :key_field => "Protein Mutation", :fields => %w(siftTransfic siftTransficLabel pph2Transfic pph2TransficLabel maTransfic maTransficLabel), :type => :list)
       puts result
