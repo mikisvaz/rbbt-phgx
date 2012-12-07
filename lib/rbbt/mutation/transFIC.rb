@@ -27,7 +27,7 @@ module TransFIC
 
       result = nil
 
-      Misc.insist do
+      Misc.insist(5) do
         result = CMD.cmd("curl -X GET '#{ test_url }'").read
         raise result.split("\n").select{|line| line =~ /Error/}.first if result =~ /Error/
 
@@ -39,7 +39,6 @@ module TransFIC
       end
 
       tsv = TSV.setup({}, :key_field => "Protein Mutation", :fields => %w(siftTransfic siftTransficLabel pph2Transfic pph2TransficLabel maTransfic maTransficLabel), :type => :list)
-      puts result
       result.split("\n").each do |line|
         next if line[0] == "#"[0]
 
