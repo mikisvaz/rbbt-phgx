@@ -9,5 +9,6 @@ class TestTransFIC < Test::Unit::TestCase
     ]
     puts TransFIC.predict(mutations)
   end
+
 end
 
