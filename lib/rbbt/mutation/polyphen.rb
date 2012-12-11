@@ -92,8 +92,11 @@ module Polyphen2
       chunks = mutations.length.to_f / max
       chunks = chunks.ceil
 
+      num = 0
       Log.debug("Polyphen2 ran with #{chunks} chunks of #{ max } mutations") if chunks > 1
       Misc.divide(mutations, chunks).inject(nil) do |acc, list|
+        num += 1
+        Log.debug("Polyphen2 ran with #{chunks} chunks: chunk #{num}") if chunks > 1
         list = list * "\n"
         if acc.nil?
           acc = predict(list)

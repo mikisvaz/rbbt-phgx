@@ -32,8 +32,12 @@ module SIFT
   def self.chunked_predict(mutations)
     chunks = mutations.length.to_f / 500
     chunks = chunks.ceil
+
+    Log.debug("SIFT ran with #{chunks} chunks of #{ max } mutations") if chunks > 1
+
     tsv = TSV.setup({}, :type => :list, :key_field => "Mutated Isoform", :fields =>["Ensembl Protein ID", "Amino Acid Position", "Wildtype Amino Acid", "Mutant Amino Acid", "Prediction", "Score 1", "Score 2", "Score 3"])
     Misc.divide(mutations.uniq.sort, chunks).inject(tsv) do |acc, list|
+      Log.debug("SIFT ran with #{chunks} chunks: chunk #{num}") if chunks > 1
         acc = TSV.setup(acc.merge(predict(list)))
     end
   end
