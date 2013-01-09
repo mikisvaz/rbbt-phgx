@@ -5,5 +5,5 @@ module STITCH
   self.pkgdir = "phgx"
   self.subdir = "share/stitch"
 
-  STITCH.claim STITCH.root.find, :rake, Rbbt.share.install.STITCH.Rakefile.find(:lib)
+  STITCH.claim STITCH.root, :rake, Rbbt.share.install.STITCH.Rakefile.find(:lib)
 end

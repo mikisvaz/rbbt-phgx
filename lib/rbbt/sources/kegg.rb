@@ -7,7 +7,7 @@ module KEGG
   self.subdir = "share/kegg"
 
 
-  KEGG.claim KEGG.root.find, :rake, Rbbt.share.install.KEGG.Rakefile.find(:lib)
+  KEGG.claim KEGG.root, :rake, Rbbt.share.install.KEGG.Rakefile.find(:lib)
 
   def self.names
     @@names ||= KEGG.pathways.tsv :fields => ["Pathway Name"], :persist => true, :type => :single, :unnamed => true

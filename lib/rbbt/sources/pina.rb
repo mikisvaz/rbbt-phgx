@@ -5,7 +5,7 @@ module Pina
   self.pkgdir = "phgx"
   self.subdir = "share/pina"
 
-  Pina.claim Pina.root.find, :rake, Rbbt.share.install.Pina.Rakefile.find(:lib)
+  Pina.claim Pina.root, :rake, Rbbt.share.install.Pina.Rakefile.find(:lib)
 end
 
 if defined? Entity and defined? Gene and Entity === Gene

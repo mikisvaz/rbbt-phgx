@@ -5,7 +5,7 @@ module STRING
   self.pkgdir = "phgx"
   self.subdir = "share/string"
 
-  STRING.claim STRING.root.find, :rake, Rbbt.share.install.STRING.Rakefile.find(:lib)
+  STRING.claim STRING.root, :rake, Rbbt.share.install.STRING.Rakefile.find(:lib)
 end
 
 if defined? Entity and defined? Gene and Entity === Gene

@@ -5,5 +5,5 @@ module Matador
   self.pkgdir = "phgx"
   self.subdir = "share/matador"
 
-  Matador.claim Matador.root.find, :rake, Rbbt.share.install.Matador.Rakefile.find(:lib)
+  Matador.claim Matador.root, :rake, Rbbt.share.install.Matador.Rakefile.find(:lib)
 end
