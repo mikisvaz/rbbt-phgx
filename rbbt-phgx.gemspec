@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rbbt-phgx"
-  s.version = "2.0.0"
+  s.version = "2.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Miguel Vazquez"]
-  s.date = "2012-12-21"
+  s.date = "2013-01-09"
   s.description = "Pharmaco-genomics related data sources"
   s.email = "miguel.vazquez@fdi.ucm.es"
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     "LICENSE",
     "lib/phgx.rb",
+    "lib/rbbt/mutation/chasm.rb",
     "lib/rbbt/mutation/fireDB.rb",
     "lib/rbbt/mutation/mutation_assessor.rb",
     "lib/rbbt/mutation/oncodriveFM.rb",
@@ -53,7 +54,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
   s.summary = "Pharmaco-genomics for the Ruby Bioinformatics Toolkit (rbbt)"
-  s.test_files = ["test/rbbt/sources/test_matador.rb", "test/rbbt/sources/test_pharmagkb.rb", "test/rbbt/sources/test_stitch.rb", "test/rbbt/sources/test_cancer.rb", "test/rbbt/sources/test_kegg.rb", "test/rbbt/mutation/test_snps_and_go.rb", "test/rbbt/mutation/test_fireDB.rb", "test/rbbt/mutation/test_sift.rb", "test/rbbt/mutation/test_polyphen.rb", "test/rbbt/mutation/test_mutation_assessor.rb", "test/rbbt/mutation/test_oncodriveFM.rb", "test/rbbt/mutation/test_transFIC.rb", "test/test_helper.rb"]
+  s.test_files = ["test/rbbt/sources/test_matador.rb", "test/rbbt/sources/test_cancer.rb", "test/rbbt/sources/test_stitch.rb", "test/rbbt/sources/test_pharmagkb.rb", "test/rbbt/sources/test_kegg.rb", "test/rbbt/mutation/test_oncodriveFM.rb", "test/rbbt/mutation/test_polyphen.rb", "test/rbbt/mutation/test_chasm.rb", "test/rbbt/mutation/test_sift.rb", "test/rbbt/mutation/test_transFIC.rb", "test/rbbt/mutation/test_snps_and_go.rb", "test/rbbt/mutation/test_mutation_assessor.rb", "test/rbbt/mutation/test_fireDB.rb", "test/test_helper.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
