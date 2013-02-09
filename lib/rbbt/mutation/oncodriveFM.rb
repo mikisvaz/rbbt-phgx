@@ -9,18 +9,21 @@ module OncodriveFM
   Rbbt.claim Rbbt.software.opt.OncodriveFM, :install, Rbbt.share.install.software.OncodriveFM.find
 
 
-  def self.process_cohort(cohort)
+  def self.process_cohort(cohort, return_inputs = false)
 
     all_mutated_isoforms = cohort.metagenotype.mutated_isoforms.compact.flatten.uniq
     nonsense = all_mutated_isoforms.select{|mi| mi.consequence == "MISS-SENSE"}
 
     mutation_assessor = MutEval.job(:mutation_assessor, "OncodriveFM", :mutations => all_mutated_isoforms.subset(nonsense)).run
     sift              = MutEval.job(:sift, "OncodriveFM", :mutations => all_mutated_isoforms.subset(nonsense)).run
-    polyphen          = MutEval.job(:polyphen, "OncodriveFM", :mutations => all_mutated_isoforms.subset(nonsense)).run
+    #polyphen          = MutEval.job(:polyphen, "OncodriveFM", :mutations => all_mutated_isoforms.subset(nonsense)).run
 
     mutation_assessor_max = mutation_assessor.slice("Mutation Assessor Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact.max
-    sift_max              = sift.slice("SIFT Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact.max
-    polyphen_max          = polyphen.slice("Polyphen Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact.max
+    sift_max              = sift.slice("SIFT Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact.min
+
+    mutation_assessor_mean = Misc.mean(mutation_assessor.slice("Mutation Assessor Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact)
+    sift_mean              = Misc.mean(sift.slice("SIFT Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact)
+    #polyphen_max          = polyphen.slice("Polyphen Score").values.flatten.collect{|v| (v.nil? or v.empty?) ? nil : v.to_f}.compact.max
 
     mutation_file = []
     cohort.each do |genotype|
@@ -28,21 +31,27 @@ module OncodriveFM
       genotype.each do |mutation|
         genes = mutation.genes
         next if genes.empty?
-        mut_mis = mutation.mutated_isoforms 
-        next if mut_mis.nil? or mut_mis.empty?
+        mut_mis = mutation.mutated_isoforms || []
+        next if mut_mis.empty? and not mutation.in_exon_junction?
         genes.each do |gene|
+
           mis = mut_mis.select{|mi| mi.protein and mi.protein.gene == gene}
 
           mutation_assessor.values_at(*mis)
-          ma_score       = mutation_assessor.values_at(*mis).compact.collect{|v| v["Mutation Assessor Score"]}.first
-          sift_score     = sift.values_at(*mis).compact.collect{|v| v["SIFT Score"]}.first
-          polyphen_score = polyphen.values_at(*mis).compact.collect{|v| v["Polyphen Score"]}.first
+          ma_score       = mutation_assessor.values_at(*mis).compact.collect{|v| v["Mutation Assessor Score"]}.compact.collect{|v| v.to_f}.sort.last
+          sift_score     = sift.values_at(*mis).compact.collect{|v| v["SIFT Score"]}.compact.collect{|v| v.to_f}.sort.first
+          #polyphen_score = polyphen.values_at(*mis).compact.collect{|v| v["Polyphen Score"]}.compact.collect{|v| v.to_f}.sort.first
 
-          ma_score       = mutation_assessor_max if mis.select{|mi| mi.truncated}.any?
-          sift_score     = sift_max            if mis.select{|mi| mi.truncated}.any?
-          polyphen_score = polyphen_max    if mis.select{|mi| mi.truncated}.any?
+          ma_score       = mutation_assessor_max if mis.select{|mi| mi.truncated }.any? or mutation.in_exon_junction?
+          sift_score     = sift_max            if mis.select{|mi| mi.truncated }.any? or mutation.in_exon_junction?
 
-          mutation_file << [gene, sift_score || "NA", polyphen_score || "NA", ma_score || "NA", sample] * "\t"
+          ma_score       = mutation_assessor_mean if ma_score.nil? and mis.select{|mi| mi.consequence == "Indel" or mi.consequence == "Frameshift"}.any?
+          sift_score     = sift_mean              if sift_score.nil? and mis.select{|mi| mi.consequence == "Indel" or mi.consequence == "Frameshift"}.any?
+
+          #polyphen_score = polyphen_max    if mis.select{|mi| mi.truncated}.any?
+
+          #mutation_file << [gene, sift_score || "NA", polyphen_score || "NA", ma_score || "NA", sample] * "\t"
+          mutation_file << [gene, sift_score || "NA", ma_score || "NA", sample] * "\t"
         end
       end
     end
@@ -52,8 +61,8 @@ module OncodriveFM
         FileUtils.mkdir_p outdir unless File.exists? outdir
         name = "Tumor"
 
-        TmpFile.with_file(config(fmuts, outdir, "[TUMOR]" => name)) do |fconf|
-          puts Open.read(fconf)
+        config_string = config(fmuts, outdir, "[TUMOR]" => name)
+        TmpFile.with_file(config_string) do |fconf|
           CMD.cmd("cd #{Rbbt.software.opt.OncodriveFM.bin.find}; ./pipeline_launcher.pl '#{fconf}'").read
         end
 
@@ -63,7 +72,7 @@ module OncodriveFM
         tsv.key_field = "Ensembl Gene ID"
         tsv.fields = ["Associated Gene Name", "Sample count", "p-value", "unknown"]
 
-        tsv
+        return_inputs ? [tsv, mutation_file * "\n", config_string] : tsv
       end
     end
 
@@ -127,7 +136,8 @@ internal='[INTERNAL]'
     options = Misc.add_defaults options, 
       "[TUMOR]" => "Tumor",
       "[MUTFILE]" => mutfile,
-      "[NUMFIS]" => 3,
+      #"[NUMFIS]" => 3,
+      "[NUMFIS]" => 2,
       "[DATA_DIR]" => Rbbt.software.opt.OncodriveFM.data.find,
       "[OUTDIR]" => outdir,
       "[TMPDIR]" => Rbbt.tmp.OncodriveFM.find,
