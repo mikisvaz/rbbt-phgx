@@ -65,7 +65,6 @@ if defined? Entity
       name = KEGG.id2name(self)
       name.sub(/ - Homo.*/,'') unless name.nil?
     end
-    persist :name
 
     property :description => :single2array do
       KEGG.description(self)
@@ -76,7 +75,6 @@ if defined? Entity
       KEGG.index2genes.values_at(*self).
         each{|gene| gene.organism = organism if gene.respond_to? :organism }
     end
-    persist :genes
   end
 
   if defined? Gene and Entity === Gene
