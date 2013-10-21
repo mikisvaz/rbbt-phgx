@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rbbt-phgx"
-  s.version = "2.0.1"
+  s.version = "2.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Miguel Vazquez"]
-  s.date = "2013-01-09"
+  s.date = "2013-10-21"
   s.description = "Pharmaco-genomics related data sources"
   s.email = "miguel.vazquez@fdi.ucm.es"
   s.extra_rdoc_files = [
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
     "lib/rbbt/mutation/chasm.rb",
     "lib/rbbt/mutation/fireDB.rb",
     "lib/rbbt/mutation/mutation_assessor.rb",
-    "lib/rbbt/mutation/oncodriveFM.rb",
     "lib/rbbt/mutation/polyphen.rb",
     "lib/rbbt/mutation/sift.rb",
     "lib/rbbt/mutation/snps_and_go.rb",
@@ -47,17 +46,16 @@ Gem::Specification.new do |s|
     "share/install/Pina/Rakefile",
     "share/install/STITCH/Rakefile",
     "share/install/STRING/Rakefile",
-    "share/install/lib/rake_helper.rb",
-    "share/install/software/OncodriveFM"
+    "share/install/lib/rake_helper.rb"
   ]
   s.homepage = "http://github.com/mikisvaz/rbbt-phgx"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "2.0.3"
   s.summary = "Pharmaco-genomics for the Ruby Bioinformatics Toolkit (rbbt)"
   s.test_files = ["test/rbbt/sources/test_matador.rb", "test/rbbt/sources/test_cancer.rb", "test/rbbt/sources/test_stitch.rb", "test/rbbt/sources/test_pharmagkb.rb", "test/rbbt/sources/test_kegg.rb", "test/rbbt/mutation/test_oncodriveFM.rb", "test/rbbt/mutation/test_polyphen.rb", "test/rbbt/mutation/test_chasm.rb", "test/rbbt/mutation/test_sift.rb", "test/rbbt/mutation/test_transFIC.rb", "test/rbbt/mutation/test_snps_and_go.rb", "test/rbbt/mutation/test_mutation_assessor.rb", "test/rbbt/mutation/test_fireDB.rb", "test/test_helper.rb"]
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rbbt-util>, [">= 4.0.0"])
