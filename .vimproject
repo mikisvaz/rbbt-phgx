@@ -17,7 +17,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    pina.rb
   }
   mutation=rbbt/mutation{
-   misc.rb
    snps_and_go.rb
    fireDB.rb
    sift.rb
@@ -25,7 +24,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    mutation_assessor.rb
    transFIC.rb
    chasm.rb
-   oncodriveFM.rb
   }
  }
  test=test {
