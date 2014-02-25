@@ -5,25 +5,18 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
  lib=lib{
   phgx.rb
   sources=rbbt/sources {
+   biogrid.rb
    cancer.rb
-   matador.rb
-   kegg.rb
-   reactome.rb
-   pharmagkb.rb
-   stitch.rb
-   string.rb
-   hprd.rb
    dbsnp.rb
-   pina.rb
   }
   mutation=rbbt/mutation{
-   snps_and_go.rb
-   fireDB.rb
-   sift.rb
-   polyphen.rb
-   mutation_assessor.rb
-   transFIC.rb
    chasm.rb
+   fireDB.rb
+   mutation_assessor.rb
+   polyphen.rb
+   sift.rb
+   snps_and_go.rb
+   transFIC.rb
   }
  }
  test=test {
@@ -44,7 +37,6 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
  share=share{
   install=install{
    software=software{
-    OncodriveFM
    }
    lib=lib{
     rake_helper.rb
@@ -52,28 +44,7 @@ rbbt-phgx=/$PWD filter="*.rb *.rake Rakefile *.rdoc *.R *.sh *.js *.haml *.sass 
    Matador=Matador{
     Rakefile
    }
-   KEGG=KEGG{
-    Rakefile
-   }
-   PharmaGKB=PharmaGKB{
-    Rakefile
-   }
-   STITCH=STITCH{
-    Rakefile
-   }
-   STRING=STRING{
-    Rakefile
-   }
    NCI=NCI{
-    Rakefile
-   }
-   Reactome=Reactome{
-    Rakefile
-   }
-   HPRD=HPRD{
-    Rakefile
-   }
-   Pina=Pina{
     Rakefile
    }
   }

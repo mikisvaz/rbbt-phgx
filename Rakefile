@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rbbt-phgx"
-    gem.summary = %Q{Pharmaco-genomics for the Ruby Bioinformatics Toolkit (rbbt)}
-    gem.description = %Q{Pharmaco-genomics related data sources}
+    gem.summary = %Q{DEPRECATED -- Pharmaco-genomics for the Ruby Bioinformatics Toolkit (rbbt)}
+    gem.description = %Q{Pharmaco-genomics related data sources. Deprecated. Relevant files moved to rbbt-sources for the time been}
     gem.email = "miguel.vazquez@fdi.ucm.es"
     gem.homepage = "http://github.com/mikisvaz/rbbt-phgx"
     gem.authors = ["Miguel Vazquez"]
